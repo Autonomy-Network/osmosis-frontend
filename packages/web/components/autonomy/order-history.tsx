@@ -2,7 +2,7 @@ import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { CoinPrimitive } from "@keplr-wallet/stores";
 import { CoinPretty } from "@keplr-wallet/unit";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 
 import { REGISTRY_ADDRESSES } from "../../config";
@@ -47,9 +47,13 @@ interface Order {
 
 const OrderRow = ({ order }: { order: Order }) => {
   const {
+    accountStore,
+    chainStore,
     assetsStore: { nativeBalances, ibcBalances },
   } = useStore();
+  const { chainId } = chainStore.osmosis;
   const { isMobile } = useWindowSize();
+  const account = accountStore.getAccount(chainId);
   const allTokenBalances = nativeBalances.concat(ibcBalances);
 
   const inputCurrency = allTokenBalances.find(
@@ -64,6 +68,24 @@ const OrderRow = ({ order }: { order: Order }) => {
       order.outputToken.denom.toLowerCase()
   )?.balance.currency;
 
+  const handleCancelOrder = useCallback(async () => {
+    try {
+      await account.cosmwasm.sendExecuteContractMsg(
+        "executeWasm",
+        REGISTRY_ADDRESSES[chainId],
+        { cancel_request: { id: order.id } },
+        [],
+        "",
+        { gas: "350000" },
+        undefined,
+        (e) => console.log(e)
+      );
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  }, [order, chainId, account]);
+
   if (!inputCurrency || !outputCurrency) return null;
 
   const inputCoin = new CoinPretty(inputCurrency, order.inputToken.amount);
@@ -75,36 +97,46 @@ const OrderRow = ({ order }: { order: Order }) => {
       className="w-full p-px rounded-2xl hover:bg-enabledGold text-left bg-superfluid hover:bg-none mb-4"
     >
       <div className="flex flex-col place-content-between w-full h-full p-4 bg-card rounded-2xlinset cursor-pointer">
-        <div className="flex items-center">
+        <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <div className="w-8 h-8 md:h-5 md:w-5 rounded-full overflow-hidden">
-              {inputCurrency.coinImageUrl && (
-                <Image
-                  src={inputCurrency.coinImageUrl}
-                  alt="token icon"
-                  className="rounded-full"
-                  width={isMobile ? 20 : 32}
-                  height={isMobile ? 20 : 32}
-                />
-              )}
+            <div className="flex items-center">
+              <div className="w-8 h-8 md:h-5 md:w-5 rounded-full overflow-hidden">
+                {inputCurrency.coinImageUrl && (
+                  <Image
+                    src={inputCurrency.coinImageUrl}
+                    alt="token icon"
+                    className="rounded-full"
+                    width={isMobile ? 20 : 32}
+                    height={isMobile ? 20 : 32}
+                  />
+                )}
+              </div>
+              <h6 className="ml-1">{inputCurrency.coinDenom}</h6>
             </div>
-            <h6 className="ml-1">{inputCurrency.coinDenom}</h6>
-          </div>
-          <div className="mx-3">{"->"}</div>
-          <div className="flex items-center">
-            <div className="w-8 h-8 md:h-5 md:w-5 rounded-full overflow-hidden">
-              {outputCurrency.coinImageUrl && (
-                <Image
-                  src={outputCurrency.coinImageUrl}
-                  alt="token icon"
-                  className="rounded-full"
-                  width={isMobile ? 20 : 32}
-                  height={isMobile ? 20 : 32}
-                />
-              )}
+            <div className="mx-3">{"->"}</div>
+            <div className="flex items-center">
+              <div className="w-8 h-8 md:h-5 md:w-5 rounded-full overflow-hidden">
+                {outputCurrency.coinImageUrl && (
+                  <Image
+                    src={outputCurrency.coinImageUrl}
+                    alt="token icon"
+                    className="rounded-full"
+                    width={isMobile ? 20 : 32}
+                    height={isMobile ? 20 : 32}
+                  />
+                )}
+              </div>
+              <h6 className="ml-1">{outputCurrency.coinDenom}</h6>
             </div>
-            <h6 className="ml-1">{outputCurrency.coinDenom}</h6>
           </div>
+          {order.status === "created" && (
+            <button
+              className="button px-3 py-1 md:px-1 bg-error rounded-lg"
+              onClick={handleCancelOrder}
+            >
+              Cancel
+            </button>
+          )}
         </div>
         <p className="font-bold mt-2">
           Sell {inputCoin.trim(true).toString()} for{" "}
