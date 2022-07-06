@@ -247,7 +247,7 @@ export default function OrderHistory({
           },
           {
             title: "Cancelled",
-            content: <OrderRows orders={orderByStatus("cancelled")} />,
+            content: <OrderRows orders={orderByStatus("canceled")} />,
           },
         ]}
       />
