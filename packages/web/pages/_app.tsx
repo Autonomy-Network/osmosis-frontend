@@ -32,34 +32,48 @@ function MyApp({ Component, pageProps }: AppProps) {
       selectionTest: /\/$/,
     },
     {
-      label: "Pools",
-      link: "/pools",
+      label: "Limit Order",
+      link: "/limit-order",
       icon: IS_FRONTIER ? "/icons/pool-white.svg" : "/icons/pool.svg",
       iconSelected: "/icons/pool-selected.svg",
-      selectionTest: /\/pools/,
+      selectionTest: /\/limit-order/,
     },
     {
-      label: "Assets",
-      link: "/assets",
+      label: "Stop Loss",
+      link: "/stop-loss",
       icon: IS_FRONTIER ? "/icons/asset-white.svg" : "/icons/asset.svg",
       iconSelected: "/icons/asset-selected.svg",
-      selectionTest: /\/assets/,
+      selectionTest: /\/stop-loss/,
     },
-    {
-      label: "Stake",
-      link: "https://wallet.keplr.app/chains/osmosis",
-      icon: IS_FRONTIER ? "/icons/ticket-white.svg" : "/icons/ticket.svg",
-    },
-    {
-      label: "Vote",
-      link: "https://wallet.keplr.app/chains/osmosis?tab=governance",
-      icon: IS_FRONTIER ? "/icons/vote-white.svg" : "/icons/vote.svg",
-    },
-    {
-      label: "Info",
-      link: "https://info.osmosis.zone",
-      icon: IS_FRONTIER ? "/icons/chart-white.svg" : "/icons/chart.svg",
-    },
+    // {
+    //   label: "Pools",
+    //   link: "/pools",
+    //   icon: IS_FRONTIER ? "/icons/pool-white.svg" : "/icons/pool.svg",
+    //   iconSelected: "/icons/pool-selected.svg",
+    //   selectionTest: /\/pools/,
+    // },
+    // {
+    //   label: "Assets",
+    //   link: "/assets",
+    //   icon: IS_FRONTIER ? "/icons/asset-white.svg" : "/icons/asset.svg",
+    //   iconSelected: "/icons/asset-selected.svg",
+    //   selectionTest: /\/assets/,
+    // },
+    // {
+    //   label: "Stake",
+    //   link: "https://wallet.keplr.app/chains/osmosis",
+    //   icon: IS_FRONTIER ? "/icons/ticket-white.svg" : "/icons/ticket.svg",
+    // },
+    // {
+    //   label: "Vote",
+    //   link: "https://wallet.keplr.app/chains/osmosis?tab=governance",
+    //   icon: IS_FRONTIER ? "/icons/vote-white.svg" : "/icons/vote.svg",
+    // },
+    // {
+    //   label: "Info",
+    //   link: "https://info.osmosis.zone",
+    //   icon: IS_FRONTIER ? "/icons/chart-white.svg" : "/icons/chart.svg",
+    // },
   ];
 
   // matomo analytics

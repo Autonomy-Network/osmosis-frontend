@@ -1,0 +1,224 @@
+import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import { CoinPrimitive } from "@keplr-wallet/stores";
+import { CoinPretty } from "@keplr-wallet/unit";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+
+import { REGISTRY_ADDRESSES } from "../../config";
+import { useWindowSize } from "../../hooks";
+import { useStore } from "../../stores";
+import { TabBox } from "../control";
+
+interface StateResponse {
+  curr_executing_request_id: number;
+  stakes_len: number;
+  total_requests: number;
+  total_stake_amount: string;
+}
+
+interface Request {
+  user: string;
+  executor: string;
+  target: string;
+  msg: string;
+  input_asset: any;
+  status: string;
+  created_at: number;
+}
+
+export interface RequestInfoResponse {
+  id: number;
+  request: Request;
+}
+
+interface RequestsResponse {
+  requests: RequestInfoResponse[];
+}
+
+interface Order {
+  id: number;
+  type: "Limit" | "StopLoss";
+  status: string;
+  createdAt: number;
+  inputToken: CoinPrimitive;
+  outputToken: CoinPrimitive;
+}
+
+const OrderRow = ({ order }: { order: Order }) => {
+  const {
+    assetsStore: { nativeBalances, ibcBalances },
+  } = useStore();
+  const { isMobile } = useWindowSize();
+  const allTokenBalances = nativeBalances.concat(ibcBalances);
+
+  const inputCurrency = allTokenBalances.find(
+    (tb) =>
+      tb.balance.currency.coinMinimalDenom.toLowerCase() ===
+      order.inputToken.denom.toLowerCase()
+  )?.balance.currency;
+
+  const outputCurrency = allTokenBalances.find(
+    (tb) =>
+      tb.balance.currency.coinMinimalDenom.toLowerCase() ===
+      order.outputToken.denom.toLowerCase()
+  )?.balance.currency;
+
+  if (!inputCurrency || !outputCurrency) return null;
+
+  const inputCoin = new CoinPretty(inputCurrency, order.inputToken.amount);
+  const outputCoin = new CoinPretty(outputCurrency, order.outputToken.amount);
+
+  return (
+    <div
+      key={order.id}
+      className="w-full p-px rounded-2xl hover:bg-enabledGold text-left bg-superfluid hover:bg-none mb-4"
+    >
+      <div className="flex flex-col place-content-between w-full h-full p-4 bg-card rounded-2xlinset cursor-pointer">
+        <div className="flex items-center">
+          <div className="flex items-center">
+            <div className="w-8 h-8 md:h-5 md:w-5 rounded-full overflow-hidden">
+              {inputCurrency.coinImageUrl && (
+                <Image
+                  src={inputCurrency.coinImageUrl}
+                  alt="token icon"
+                  className="rounded-full"
+                  width={isMobile ? 20 : 32}
+                  height={isMobile ? 20 : 32}
+                />
+              )}
+            </div>
+            <h6 className="ml-1">{inputCurrency.coinDenom}</h6>
+          </div>
+          <div className="mx-3">{"->"}</div>
+          <div className="flex items-center">
+            <div className="w-8 h-8 md:h-5 md:w-5 rounded-full overflow-hidden">
+              {outputCurrency.coinImageUrl && (
+                <Image
+                  src={outputCurrency.coinImageUrl}
+                  alt="token icon"
+                  className="rounded-full"
+                  width={isMobile ? 20 : 32}
+                  height={isMobile ? 20 : 32}
+                />
+              )}
+            </div>
+            <h6 className="ml-1">{outputCurrency.coinDenom}</h6>
+          </div>
+        </div>
+        <p className="font-bold mt-2">
+          Sell {inputCoin.trim(true).toString()} for{" "}
+          {outputCoin.trim(true).toString()}
+        </p>
+        <p className="subtitle2 md:caption text-wireframes-lightGrey">
+          Created At:{" "}
+          {dayjs(order.createdAt * 1000)
+            .utc()
+            .toString()}
+        </p>
+      </div>
+    </div>
+  );
+};
+const OrderRows = ({ orders }: { orders: Order[] }) => {
+  return (
+    <>
+      {orders.map((order) => (
+        <OrderRow key={order.id} order={order} />
+      ))}
+    </>
+  );
+};
+
+export default function OrderHistory({
+  orderType,
+}: {
+  orderType: "Limit" | "StopLoss";
+}) {
+  const { chainStore, accountStore } = useStore();
+  const { chainId, rpc } = chainStore.osmosis;
+  const account = accountStore.getAccount(chainId);
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  const orderByStatus = (status: string) =>
+    orders.filter(
+      (order) => order.type === orderType && order.status === status
+    );
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (account) {
+        const keplr = await account.getKeplr();
+        if (!keplr) return;
+
+        const client = await SigningCosmWasmClient.connectWithSigner(
+          rpc,
+          keplr.getOfflineSigner(chainId)
+        );
+        const state: StateResponse = await client.queryContractSmart(
+          REGISTRY_ADDRESSES[chainId],
+          { state: {} }
+        );
+        const limit = 50;
+        for (let i = 0; i < state.total_requests; i += limit) {
+          const requestsQuery = { limit, order_by: "asc" } as any;
+          if (i > 0) {
+            requestsQuery["start_after"] = i - 1;
+          }
+          const newRequests: RequestsResponse = await client.queryContractSmart(
+            REGISTRY_ADDRESSES[chainId],
+            { requests: requestsQuery }
+          );
+          const parsedOrders: Order[] = newRequests.requests
+            .filter((req) => req.request.user === account.bech32Address)
+            .map((req) => {
+              const msg = JSON.parse(
+                Buffer.from(req.request.msg, "base64").toString()
+              );
+              return {
+                id: req.id,
+                type: msg.swap.min_output === "0" ? "StopLoss" : "Limit",
+                status: req.request.status,
+                createdAt: req.request.created_at,
+                inputToken: {
+                  denom: msg.swap.denom_in,
+                  amount: msg.swap.amount,
+                },
+                outputToken: {
+                  denom: msg.swap.denom_out,
+                  amount:
+                    msg.swap.min_output === "0"
+                      ? msg.swap.max_output
+                      : msg.swap.min_output,
+                },
+              };
+            });
+          setOrders([...orders, ...parsedOrders]);
+        }
+      }
+    };
+
+    fetchHistory();
+  }, [account, chainId]);
+
+  return (
+    <div className="relative rounded-2xl bg-card border-2 md:border-0 border-cardInner px-4 md:p-0 my-4">
+      <TabBox
+        tabs={[
+          {
+            title: "Open",
+            content: <OrderRows orders={orderByStatus("created")} />,
+          },
+          {
+            title: "Executed",
+            content: <OrderRows orders={orderByStatus("executed")} />,
+          },
+          {
+            title: "Cancelled",
+            content: <OrderRows orders={orderByStatus("cancelled")} />,
+          },
+        ]}
+      />
+    </div>
+  );
+}
