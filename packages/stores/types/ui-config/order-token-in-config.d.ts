@@ -42,6 +42,7 @@ export declare class ObservableOrderTokenInConfig extends AmountConfig {
     setError(error: Error | undefined): void;
     setAmount(amount: string): void;
     setPrice(price: string): void;
+    setCurrentPrice(): void;
     get price(): string;
     get realOutputAmount(): IntPretty;
     get priceChangePercentage(): number;

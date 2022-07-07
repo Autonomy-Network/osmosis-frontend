@@ -93,14 +93,7 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
     this._inCurrencyMinimalDenom = prevOutCurrency;
     this._outCurrencyMinimalDenom = prevInCurrency;
 
-    const { beforeSpotPriceWithoutSwapFeeOutOverIn } = this.expectedSwapResult;
-    this.setPrice(
-      beforeSpotPriceWithoutSwapFeeOutOverIn
-        .trim(true)
-        .maxDecimals(6)
-        .toString()
-        .replace(",", "")
-    );
+    this.setCurrentPrice();
   }
 
   get pools(): Pool[] {
@@ -372,6 +365,16 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
   setAmount(amount: string) {
     super.setAmount(amount);
 
+    this.setCurrentPrice();
+  }
+
+  @action
+  setPrice(price: string) {
+    this._price = price;
+  }
+
+  @action
+  setCurrentPrice() {
     const { beforeSpotPriceWithoutSwapFeeOutOverIn } = this.expectedSwapResult;
     this.setPrice(
       beforeSpotPriceWithoutSwapFeeOutOverIn
@@ -380,11 +383,6 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
         .toString()
         .replace(",", "")
     );
-  }
-
-  @action
-  setPrice(price: string) {
-    this._price = price;
   }
 
   get price(): string {

@@ -424,6 +424,12 @@ export const StopLoss: FunctionComponent<{
             </div>
             {orderTokenInConfig && (
               <div className="flex items-center mt-3">
+                <button
+                  className="button h-[1.375rem] border-2 border-primary-200 rounded-lg bg-primary-200/30 select-none hover:bg-primary-200/60"
+                  onClick={() => orderTokenInConfig.setCurrentPrice()}
+                >
+                  <span className="mx-2 text-caption">Current</span>
+                </button>
                 <input
                   type="number"
                   className="font-h5 md:font-subtitle1 text-h5 md:text-subtitle1 text-white-full bg-transparent text-right focus:outline-none w-full"
@@ -723,7 +729,7 @@ export const StopLoss: FunctionComponent<{
                     first: {
                       pool_id: first!.poolId,
                       denom_in: tokenInCurrency.coinMinimalDenom,
-                      denom_out: first!.tokenOutCurrency,
+                      denom_out: first!.tokenOutCurrency.coinMinimalDenom,
                     },
                     route: [],
                   } as any;

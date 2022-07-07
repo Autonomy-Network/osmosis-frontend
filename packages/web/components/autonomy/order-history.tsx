@@ -58,14 +58,16 @@ const OrderRow = ({ order }: { order: Order }) => {
 
   const inputCurrency = allTokenBalances.find(
     (tb) =>
+      typeof order.inputToken.denom === "string" &&
       tb.balance.currency.coinMinimalDenom.toLowerCase() ===
-      order.inputToken.denom.toLowerCase()
+        order.inputToken.denom.toLowerCase()
   )?.balance.currency;
 
   const outputCurrency = allTokenBalances.find(
     (tb) =>
+      typeof order.outputToken.denom === "string" &&
       tb.balance.currency.coinMinimalDenom.toLowerCase() ===
-      order.outputToken.denom.toLowerCase()
+        order.outputToken.denom.toLowerCase()
   )?.balance.currency;
 
   const handleCancelOrder = useCallback(async () => {
@@ -210,28 +212,21 @@ export default function OrderHistory({
                 Buffer.from(request.msg, "base64").toString()
               );
               const { swap } = msg;
-              const order: Order = {
+              return {
                 id: req.id,
                 type: swap.min_output === "0" ? "StopLoss" : "Limit",
                 status: request.status,
                 createdAt: request.created_at,
-                inputToken: { denom: "", amount: swap.amount },
+                inputToken: { denom: swap.first.denom_in, amount: swap.amount },
                 outputToken: {
-                  denom: "",
+                  denom:
+                    swap.route.length > 0
+                      ? swap.route[swap.route.length - 1].denom_out
+                      : swap.first.denom_out,
                   amount:
                     swap.min_output === "0" ? swap.max_output : swap.min_output,
                 },
               };
-
-              if (swap.denom_in && swap.denom_out) {
-                order.inputToken.denom = swap.denom_in;
-                order.outputToken.denom = swap.denom_out;
-              } else {
-                order.inputToken.denom = swap.first.denom_in;
-                order.outputToken.denom =
-                  swap.route[swap.route.length - 1].denom_out;
-              }
-              return order;
             });
           allOrders.push(...parsedOrders);
         }
