@@ -703,93 +703,103 @@ export const StopLoss: FunctionComponent<{
                   )
                   .truncate();
 
+                const { tokenOutCurrency } = routes[routes.length - 1];
+                const tokenOutUAmount = orderTokenInConfig.realOutputAmount
+                  .toDec()
+                  .mul(
+                    DecUtils.getTenExponentNInPrecisionRange(
+                      tokenOutCurrency.coinDecimals
+                    )
+                  )
+                  .truncate();
+
                 try {
+                  const swap = {
+                    user: account.bech32Address,
+                    amount: tokenInUAmount.toString(),
+                    min_output: "0",
+                    max_output: tokenOutUAmount.toString(),
+                  } as any;
+
                   if (routes.length === 1) {
-                    const { poolId, tokenOutCurrency } = routes[0];
-                    const tokenOutUAmount = orderTokenInConfig.realOutputAmount
-                      .toDec()
-                      .mul(
-                        DecUtils.getTenExponentNInPrecisionRange(
-                          tokenOutCurrency.coinDecimals
-                        )
-                      )
-                      .truncate();
-
-                    const msg = Buffer.from(
-                      JSON.stringify({
-                        swap: {
-                          user: account.bech32Address,
-                          pool_id: poolId,
-                          denom_in: tokenInCurrency.coinMinimalDenom,
-                          denom_out: tokenOutCurrency.coinMinimalDenom,
-                          amount: tokenInUAmount.toString(),
-                          min_output: "0",
-                          max_output: tokenOutUAmount.toString(),
-                        },
-                      })
-                    ).toString("base64");
-
-                    const input_asset =
-                      tokenInCurrency.coinMinimalDenom.startsWith("u") ||
-                      tokenInCurrency.coinMinimalDenom.startsWith("ibc/")
-                        ? {
-                            info: {
-                              native_token: {
-                                denom: tokenInCurrency.coinMinimalDenom,
-                              },
-                            },
-                            amount: tokenInUAmount.toString(),
-                          }
-                        : {
-                            info: {
-                              token: {
-                                contract_addr: tokenInCurrency.coinMinimalDenom,
-                              },
-                            },
-                            amount: tokenInUAmount.toString(),
-                          };
-
-                    const funds = [];
-                    if (tokenInCurrency.coinMinimalDenom !== "uosmo") {
-                      funds.push({
-                        denom: tokenInCurrency.coinMinimalDenom,
-                        amount: tokenInUAmount.toString(),
-                      });
-                      funds.push({ denom: "uosmo", amount: "1000" }); // fee amount in usomo
-                    } else {
-                      funds.push({
-                        denom: "uosmo",
-                        amount: new Dec(orderTokenInConfig.amount)
-                          .add(new Dec("0.001"))
-                          .mul(
-                            DecUtils.getTenExponentNInPrecisionRange(
-                              tokenInCurrency.coinDecimals
-                            )
-                          )
-                          .truncate()
-                          .toString(),
-                      });
-                    }
-
-                    await account.cosmwasm.sendExecuteContractMsg(
-                      "executeWasm",
-                      REGISTRY_ADDRESSES[chainId],
-                      {
-                        create_request: {
-                          target: WRAPPER_ADDRESSES[chainId],
-                          msg,
-                          input_asset,
-                        },
-                      },
-                      funds,
-                      "",
-                      { gas: "350000" },
-                      undefined,
-                      (e) => console.log(e)
-                    );
+                    swap["pool_id"] = routes[0].poolId;
+                    swap["denom_in"] = tokenInCurrency.coinMinimalDenom;
+                    swap["denom_out"] = tokenOutCurrency.coinMinimalDenom;
                   } else {
-                    console.log("not supported multihop yet");
+                    const first = routes.shift();
+                    swap["first"] = {
+                      pool_id: first!.poolId,
+                      denom_in: tokenInCurrency.coinMinimalDenom,
+                      denom_out: first!.tokenOutCurrency,
+                    };
+                    swap["route"] = routes.map((route) => ({
+                      pool_id: route.poolId,
+                      denom_out: route.tokenOutCurrency.coinMinimalDenom,
+                    }));
                   }
+
+                  const msg = Buffer.from(JSON.stringify({ swap })).toString(
+                    "base64"
+                  );
+
+                  const input_asset =
+                    tokenInCurrency.coinMinimalDenom.startsWith("u") ||
+                    tokenInCurrency.coinMinimalDenom.startsWith("ibc/")
+                      ? {
+                          info: {
+                            native_token: {
+                              denom: tokenInCurrency.coinMinimalDenom,
+                            },
+                          },
+                          amount: tokenInUAmount.toString(),
+                        }
+                      : {
+                          info: {
+                            token: {
+                              contract_addr: tokenInCurrency.coinMinimalDenom,
+                            },
+                          },
+                          amount: tokenInUAmount.toString(),
+                        };
+
+                  const funds = [];
+                  if (tokenInCurrency.coinMinimalDenom !== "uosmo") {
+                    funds.push({
+                      denom: tokenInCurrency.coinMinimalDenom,
+                      amount: tokenInUAmount.toString(),
+                    });
+                    funds.push({ denom: "uosmo", amount: "1000" }); // fee amount in usomo
+                  } else {
+                    funds.push({
+                      denom: "uosmo",
+                      amount: new Dec(orderTokenInConfig.amount)
+                        .add(new Dec("0.001"))
+                        .mul(
+                          DecUtils.getTenExponentNInPrecisionRange(
+                            tokenInCurrency.coinDecimals
+                          )
+                        )
+                        .truncate()
+                        .toString(),
+                    });
+                  }
+
+                  await account.cosmwasm.sendExecuteContractMsg(
+                    "executeWasm",
+                    REGISTRY_ADDRESSES[chainId],
+                    {
+                      create_request: {
+                        target: WRAPPER_ADDRESSES[chainId],
+                        msg,
+                        input_asset,
+                      },
+                    },
+                    funds,
+                    "",
+                    { gas: "350000" },
+                    undefined,
+                    (e) => console.log(e)
+                  );
                   orderTokenInConfig.setAmount("");
                   orderTokenInConfig.setFraction(undefined);
                 } catch (e) {

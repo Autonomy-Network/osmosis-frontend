@@ -1,11 +1,11 @@
 export const REGISTRY_ADDRESSES: { [chainId: string]: string } = {
   "osmosis-1": "",
   "osmo-test-4":
-    "osmo1xc6uwulu3q9y6aku373uflskwpayyete94lx8sw0k2hpmz992s0spjyq8z",
+    "osmo1m5e3fu3tjv7j5txuv65p89tpqruzh29le5e926fssax2tzcf59nqd9fmxf",
 };
 
 export const WRAPPER_ADDRESSES: { [chainId: string]: string } = {
   "osmosis-1": "",
   "osmo-test-4":
-    "osmo1rhm4z3dnd8jzn37r38s4yd63mw03e5j72tpkmt5xwvadqnqy8crqgdn5l9",
+    "osmo1zkgtuakfpxw00m7rn0e2aphtxe34znr2ewajr04ch6h4usmcf6tqdhvejw",
 };

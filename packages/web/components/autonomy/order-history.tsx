@@ -192,6 +192,7 @@ export default function OrderHistory({
           { state: {} }
         );
         const limit = 50;
+        const allOrders: Order[] = [];
         for (let i = 0; i < state.total_requests; i += limit) {
           const requestsQuery = { limit, order_by: "asc" } as any;
           if (i > 0) {
@@ -204,34 +205,43 @@ export default function OrderHistory({
           const parsedOrders: Order[] = newRequests.requests
             .filter((req) => req.request.user === account.bech32Address)
             .map((req) => {
+              const { request } = req;
               const msg = JSON.parse(
-                Buffer.from(req.request.msg, "base64").toString()
+                Buffer.from(request.msg, "base64").toString()
               );
-              return {
+              const { swap } = msg;
+              const order: Order = {
                 id: req.id,
-                type: msg.swap.min_output === "0" ? "StopLoss" : "Limit",
-                status: req.request.status,
-                createdAt: req.request.created_at,
-                inputToken: {
-                  denom: msg.swap.denom_in,
-                  amount: msg.swap.amount,
-                },
+                type: swap.min_output === "0" ? "StopLoss" : "Limit",
+                status: request.status,
+                createdAt: request.created_at,
+                inputToken: { denom: "", amount: swap.amount },
                 outputToken: {
-                  denom: msg.swap.denom_out,
+                  denom: "",
                   amount:
-                    msg.swap.min_output === "0"
-                      ? msg.swap.max_output
-                      : msg.swap.min_output,
+                    swap.min_output === "0" ? swap.max_output : swap.min_output,
                 },
               };
+
+              if (swap.denom_in && swap.denom_out) {
+                order.inputToken.denom = swap.denom_in;
+                order.outputToken.denom = swap.denom_out;
+              } else {
+                order.inputToken.denom = swap.first.denom_in;
+                order.outputToken.denom =
+                  swap.route[swap.route.length - 1].denom_out;
+              }
+              return order;
             });
-          setOrders([...orders, ...parsedOrders]);
+          allOrders.push(...parsedOrders);
         }
+        setOrders(allOrders);
       }
     };
 
-    fetchHistory();
-  }, [account, chainId]);
+    const interval = setInterval(fetchHistory, 4000);
+    return () => clearInterval(interval);
+  }, [rpc, account, chainId]);
 
   return (
     <div className="relative rounded-2xl bg-card border-2 md:border-0 border-cardInner px-4 md:p-0 my-4">
