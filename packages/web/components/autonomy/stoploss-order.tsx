@@ -714,30 +714,23 @@ export const StopLoss: FunctionComponent<{
                   .truncate();
 
                 try {
+                  const first = routes.shift();
                   const swap = {
                     user: account.bech32Address,
                     amount: tokenInUAmount.toString(),
                     min_output: "0",
                     max_output: tokenOutUAmount.toString(),
-                  } as any;
-
-                  if (routes.length === 1) {
-                    swap["pool_id"] = routes[0].poolId;
-                    swap["denom_in"] = tokenInCurrency.coinMinimalDenom;
-                    swap["denom_out"] = tokenOutCurrency.coinMinimalDenom;
-                  } else {
-                    const first = routes.shift();
-                    swap["first"] = {
+                    first: {
                       pool_id: first!.poolId,
                       denom_in: tokenInCurrency.coinMinimalDenom,
                       denom_out: first!.tokenOutCurrency,
-                    };
-                    swap["route"] = routes.map((route) => ({
-                      pool_id: route.poolId,
-                      denom_out: route.tokenOutCurrency.coinMinimalDenom,
-                    }));
-                  }
-
+                    },
+                    route: [],
+                  } as any;
+                  swap.route = routes.map((route) => ({
+                    pool_id: route.poolId,
+                    denom_out: route.tokenOutCurrency.coinMinimalDenom,
+                  }));
                   const msg = Buffer.from(JSON.stringify({ swap })).toString(
                     "base64"
                   );
