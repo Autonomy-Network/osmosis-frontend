@@ -651,7 +651,7 @@ export const StopLoss: FunctionComponent<{
 
               if (orderTokenInConfig.optimizedRoutePaths.length > 0) {
                 const routes: {
-                  poolId: string;
+                  poolId: number;
                   tokenOutCurrency: Currency;
                 }[] = [];
 
@@ -680,7 +680,7 @@ export const StopLoss: FunctionComponent<{
                   }
 
                   routes.push({
-                    poolId: pool.id,
+                    poolId: Number(pool.id),
                     tokenOutCurrency,
                   });
                 }
