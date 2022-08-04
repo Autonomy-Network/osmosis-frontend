@@ -741,25 +741,44 @@ export const StopLoss: FunctionComponent<{
                     "base64"
                   );
 
-                  const input_asset =
+                  const isNative =
                     tokenInCurrency.coinMinimalDenom.startsWith("u") ||
-                    tokenInCurrency.coinMinimalDenom.startsWith("ibc/")
-                      ? {
-                          info: {
-                            native_token: {
-                              denom: tokenInCurrency.coinMinimalDenom,
-                            },
-                          },
+                    tokenInCurrency.coinMinimalDenom.startsWith("ibc/");
+
+                  if (!isNative) {
+                    await account.cosmwasm.sendExecuteContractMsg(
+                      "executeWasm",
+                      tokenInCurrency.coinMinimalDenom,
+                      {
+                        increase_allowance: {
+                          spender: REGISTRY_ADDRESSES[chainId],
                           amount: tokenInUAmount.toString(),
-                        }
-                      : {
-                          info: {
-                            token: {
-                              contract_addr: tokenInCurrency.coinMinimalDenom,
-                            },
+                          expires: undefined,
+                        },
+                      },
+                      [],
+                      "",
+                      { gas: "350000" }
+                    );
+                  }
+
+                  const input_asset = isNative
+                    ? {
+                        info: {
+                          native_token: {
+                            denom: tokenInCurrency.coinMinimalDenom,
                           },
-                          amount: tokenInUAmount.toString(),
-                        };
+                        },
+                        amount: tokenInUAmount.toString(),
+                      }
+                    : {
+                        info: {
+                          token: {
+                            contract_addr: tokenInCurrency.coinMinimalDenom,
+                          },
+                        },
+                        amount: tokenInUAmount.toString(),
+                      };
 
                   const funds = [];
                   if (tokenInCurrency.coinMinimalDenom !== "uosmo") {
