@@ -193,7 +193,7 @@ export default function OrderHistory({
           REGISTRY_ADDRESSES[chainId],
           { state: {} }
         );
-        const limit = 50;
+        const limit = 30;
         const allOrders: Order[] = [];
         for (let i = 0; i < state.total_requests; i += limit) {
           const requestsQuery = { limit, order_by: "asc" } as any;
