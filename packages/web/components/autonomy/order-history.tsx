@@ -204,7 +204,7 @@ export default function OrderHistory({
             REGISTRY_ADDRESSES[chainId],
             { requests: requestsQuery }
           );
-          const parsedOrders: Order[] = newRequests.requests
+          const parsedOrders = newRequests.requests
             .filter((req) => req.request.user === account.bech32Address)
             .map((req) => {
               const { request } = req;
@@ -212,6 +212,7 @@ export default function OrderHistory({
                 Buffer.from(request.msg, "base64").toString()
               );
               const { swap } = msg;
+              if (!swap || !swap.first || !swap.route) return null;
               return {
                 id: req.id,
                 type: swap.min_output === "0" ? "StopLoss" : "Limit",
@@ -226,9 +227,10 @@ export default function OrderHistory({
                   amount:
                     swap.min_output === "0" ? swap.max_output : swap.min_output,
                 },
-              };
-            });
-          allOrders.push(...parsedOrders);
+              } as Order;
+            })
+            .filter((order: Order | null) => order !== null);
+          allOrders.push(...(parsedOrders as Order[]));
         }
         setOrders(allOrders);
       }
