@@ -32,6 +32,10 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
   protected _error: Error | undefined = undefined;
   @observable
   protected _price: string;
+  @observable
+  protected _largerRateEnabled: boolean;
+  @observable
+  protected _smallerRateEnabled: boolean;
 
   constructor(
     chainGetter: ChainGetter,
@@ -47,6 +51,10 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
     this._pools = pools;
 
     this._price = "0";
+
+    this._largerRateEnabled = false;
+
+    this._smallerRateEnabled = false;
 
     makeObservable(this);
   }
@@ -409,5 +417,23 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
     );
     if (price === 0) return 0;
     return ((price - marketPrice) / price) * 100;
+  }
+
+  get largerRateEnabled(): boolean {
+    return this._largerRateEnabled;
+  }
+
+  @action
+  toggleLargerRateEnabled() {
+    this._largerRateEnabled = !this._largerRateEnabled;
+  }
+
+  get smallerRateEnabled(): boolean {
+    return this._smallerRateEnabled;
+  }
+
+  @action
+  toggleSmallerRateEnabled() {
+    this._smallerRateEnabled = !this._smallerRateEnabled;
   }
 }

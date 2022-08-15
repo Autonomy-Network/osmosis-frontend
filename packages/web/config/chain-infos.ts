@@ -72,7 +72,8 @@ const chainInfos = (
         high: 0.025,
       },
       features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
-      explorerUrlToTx: "https://www.mintscan.io/osmosis/txs/{txHash}",
+      explorerUrlToTx:
+        "https://testnet.mintscan.io/osmosis-testnet/txs/{txHash}",
     },
     {
       rpc: "https://rpc-cosmoshub.keplr.app",

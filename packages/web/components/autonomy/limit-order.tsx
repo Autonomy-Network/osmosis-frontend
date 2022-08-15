@@ -22,6 +22,7 @@ import {
 import { useStore } from "../../stores";
 import { Error as ErrorBox } from "../alert";
 import { Button } from "../buttons";
+import { CheckBox } from "../control/checkbox";
 import { TokenSelect } from "../control/token-select";
 import { InputBox } from "../input";
 import { InfoTooltip } from "../tooltip";
@@ -232,6 +233,18 @@ export const LimitOrder: FunctionComponent<{
                   <span className="shrink-0">%</span>
                 </li>
               </ul>
+
+              <div className="flex items-center mt-4">
+                <CheckBox
+                  isOn={orderTokenInConfig.smallerRateEnabled}
+                  onToggle={() => orderTokenInConfig.toggleSmallerRateEnabled()}
+                  className="after:!bg-transparent after:!border-2 after:!border-iconDefault mt-1"
+                >
+                  <span className="caption md:text-xs text-sm ml-1">
+                    Enable smaller rate than market price.
+                  </span>
+                </CheckBox>
+              </div>
             </div>
           )}
         </div>
@@ -641,7 +654,8 @@ export const LimitOrder: FunctionComponent<{
               (orderTokenInConfig.error !== undefined ||
                 orderTokenInConfig.optimizedRoutePaths.length === 0 ||
                 account.txTypeInProgress !== "" ||
-                orderTokenInConfig.priceChangePercentage < 0)
+                (orderTokenInConfig.priceChangePercentage < 0 &&
+                  !orderTokenInConfig.smallerRateEnabled))
             }
             loading={account.txTypeInProgress !== ""}
             onClick={async () => {

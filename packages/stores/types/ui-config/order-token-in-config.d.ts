@@ -11,6 +11,8 @@ export declare class ObservableOrderTokenInConfig extends AmountConfig {
     protected _outCurrencyMinimalDenom: string | undefined;
     protected _error: Error | undefined;
     protected _price: string;
+    protected _largerRateEnabled: boolean;
+    protected _smallerRateEnabled: boolean;
     constructor(chainGetter: ChainGetter, queriesStore: IQueriesStore, observableQueryPools: ObservableQueryPools, initialChainId: string, sender: string, feeConfig: IFeeConfig | undefined, pools: Pool[]);
     setPools(pools: Pool[]): void;
     setSendCurrency(currency: AppCurrency | undefined): void;
@@ -46,4 +48,8 @@ export declare class ObservableOrderTokenInConfig extends AmountConfig {
     get price(): string;
     get realOutputAmount(): IntPretty;
     get priceChangePercentage(): number;
+    get largerRateEnabled(): boolean;
+    toggleLargerRateEnabled(): void;
+    get smallerRateEnabled(): boolean;
+    toggleSmallerRateEnabled(): void;
 }
