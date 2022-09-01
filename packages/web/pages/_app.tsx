@@ -32,48 +32,34 @@ function MyApp({ Component, pageProps }: AppProps) {
       selectionTest: /\/$/,
     },
     {
-      label: "Limit Order",
-      link: "/limit-order",
+      label: "Pools",
+      link: "/pools",
       icon: IS_FRONTIER ? "/icons/pool-white.svg" : "/icons/pool.svg",
       iconSelected: "/icons/pool-selected.svg",
-      selectionTest: /\/limit-order/,
+      selectionTest: /\/pools/,
     },
     {
-      label: "Stop Loss",
-      link: "/stop-loss",
+      label: "Assets",
+      link: "/assets",
       icon: IS_FRONTIER ? "/icons/asset-white.svg" : "/icons/asset.svg",
       iconSelected: "/icons/asset-selected.svg",
-      selectionTest: /\/stop-loss/,
+      selectionTest: /\/assets/,
     },
-    // {
-    //   label: "Pools",
-    //   link: "/pools",
-    //   icon: IS_FRONTIER ? "/icons/pool-white.svg" : "/icons/pool.svg",
-    //   iconSelected: "/icons/pool-selected.svg",
-    //   selectionTest: /\/pools/,
-    // },
-    // {
-    //   label: "Assets",
-    //   link: "/assets",
-    //   icon: IS_FRONTIER ? "/icons/asset-white.svg" : "/icons/asset.svg",
-    //   iconSelected: "/icons/asset-selected.svg",
-    //   selectionTest: /\/assets/,
-    // },
-    // {
-    //   label: "Stake",
-    //   link: "https://wallet.keplr.app/chains/osmosis",
-    //   icon: IS_FRONTIER ? "/icons/ticket-white.svg" : "/icons/ticket.svg",
-    // },
-    // {
-    //   label: "Vote",
-    //   link: "https://wallet.keplr.app/chains/osmosis?tab=governance",
-    //   icon: IS_FRONTIER ? "/icons/vote-white.svg" : "/icons/vote.svg",
-    // },
-    // {
-    //   label: "Info",
-    //   link: "https://info.osmosis.zone",
-    //   icon: IS_FRONTIER ? "/icons/chart-white.svg" : "/icons/chart.svg",
-    // },
+    {
+      label: "Stake",
+      link: "https://wallet.keplr.app/chains/osmosis",
+      icon: IS_FRONTIER ? "/icons/ticket-white.svg" : "/icons/ticket.svg",
+    },
+    {
+      label: "Vote",
+      link: "https://wallet.keplr.app/chains/osmosis?tab=governance",
+      icon: IS_FRONTIER ? "/icons/vote-white.svg" : "/icons/vote.svg",
+    },
+    {
+      label: "Info",
+      link: "https://info.osmosis.zone",
+      icon: IS_FRONTIER ? "/icons/chart-white.svg" : "/icons/chart.svg",
+    },
   ];
 
   // matomo analytics
