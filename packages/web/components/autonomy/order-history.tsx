@@ -9,6 +9,7 @@ import { REGISTRY_ADDRESSES } from "../../config";
 import { useWindowSize } from "../../hooks";
 import { useStore } from "../../stores";
 import { TabBox } from "../control";
+import classNames from "classnames";
 
 interface StateResponse {
   curr_executing_request_id: number;
@@ -166,8 +167,10 @@ const OrderRows = ({ orders }: { orders: Order[] }) => {
 
 export default function OrderHistory({
   orderType,
+  containerClassName,
 }: {
   orderType: "Limit" | "StopLoss";
+  containerClassName?: string;
 }) {
   const { chainStore, accountStore } = useStore();
   const { chainId, rpc } = chainStore.osmosis;
@@ -241,7 +244,12 @@ export default function OrderHistory({
   }, [rpc, account, chainId]);
 
   return (
-    <div className="relative rounded-2xl bg-card border-2 md:border-0 border-cardInner px-4 md:p-0 my-4">
+    <div
+      className={classNames(
+        "relative rounded-2xl bg-card border-2 md:border-0 border-cardInner px-4 md:p-0 my-4 w-[27rem] md:mt-mobile-header ml-auto mr-[15%] lg:mx-auto",
+        containerClassName
+      )}
+    >
       <TabBox
         tabs={[
           {

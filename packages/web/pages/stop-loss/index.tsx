@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import type { NextPage } from "next";
 import { ProgressiveSvgImage } from "../../components/progressive-svg-image";
-import { StopLoss } from "../../components/autonomy/stoploss-order";
+import { TradeClipboard } from "../../components/autonomy/trade";
 import OrderHistory from "../../components/autonomy/order-history";
 import { useStore } from "../../stores";
 import { IS_FRONTIER } from "../../config";
@@ -72,6 +72,30 @@ const StopLossPage: NextPage = observer(function () {
                 break;
               }
             }
+
+            // only pools with at least 10,000 USDC
+            if (
+              "originChainId" in asset.amount.currency &&
+              asset.amount.currency.coinMinimalDenom ===
+                "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858"
+            ) {
+              if (asset.amount.toDec().gt(new Dec(10_000))) {
+                hasEnoughAssets = true;
+                break;
+              }
+            }
+
+            // only pools with at least 10,000 DAI
+            if (
+              "originChainId" in asset.amount.currency &&
+              asset.amount.currency.coinMinimalDenom ===
+                "ibc/0CD3A0285E1341859B5E86B6AB7682F023D03E97607CCC1DC95706411D866DF7"
+            ) {
+              if (asset.amount.toDec().gt(new Dec(10_000))) {
+                hasEnoughAssets = true;
+                break;
+              }
+            }
           }
 
           if (hasEnoughAssets) {
@@ -134,11 +158,16 @@ const StopLossPage: NextPage = observer(function () {
           </g>
         </svg>
       </div>
-      <div className="w-full h-full overflow-x-hidden overflow-y-auto">
-        <div className="flex flex-col max-w-[32.5rem] md:max-w-[29.9rem] mt-8 md:mt-mobile-header ml-auto mr-[10%] lg:mx-auto">
-          <StopLoss pools={pools} />
-          <OrderHistory orderType="StopLoss" />
-        </div>
+      <div className="w-full h-full flex flex-col overflow-y-auto overflow-x-hidden">
+        <TradeClipboard
+          pools={pools}
+          type="StopLoss"
+          containerClassName="w-[27rem] mt-mobile-header ml-auto mr-[15%] lg:mx-auto"
+        />
+        <OrderHistory
+          orderType="StopLoss"
+          containerClassName="w-[27rem] ml-auto mr-[15%] lg:mx-auto"
+        />
       </div>
     </main>
   );

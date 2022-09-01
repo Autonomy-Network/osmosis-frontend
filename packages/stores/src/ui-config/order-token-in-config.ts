@@ -253,7 +253,7 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
     effectivePriceOutOverIn: IntPretty;
     tokenInFeeAmount: CoinPretty;
     swapFee: RatePretty;
-    slippage: RatePretty;
+    priceImpact: RatePretty;
   } {
     const paths = this.optimizedRoutePaths;
     this.setError(undefined);
@@ -271,7 +271,7 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
         false
       ),
       swapFee: new RatePretty(0).ready(false),
-      slippage: new RatePretty(0).ready(false),
+      priceImpact: new RatePretty(0).ready(false),
     };
 
     if (paths.length === 0) {
@@ -338,8 +338,58 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
         result.tokenInFeeAmount
       ).locale(false),
       swapFee: new RatePretty(result.swapFee),
-      slippage: new RatePretty(result.slippage),
+      priceImpact: new RatePretty(result.priceImpact),
     };
+  }
+
+  /** Calculated spot price with amount of 1 token in. */
+  @computed
+  get beforeSpotPriceWithoutSwapFeeOutOverIn(): IntPretty {
+    let paths;
+    const one = new Int(
+      DecUtils.getTenExponentNInPrecisionRange(this.sendCurrency.coinDecimals)
+        .truncate()
+        .toString()
+    );
+    try {
+      paths = this.optimizedRoutes.getOptimizedRoutesByTokenIn(
+        {
+          denom: this.sendCurrency.coinMinimalDenom,
+          amount: one,
+        },
+        this.outCurrency.coinMinimalDenom,
+        5
+      );
+    } catch {
+      return new IntPretty(0).ready(false);
+    }
+
+    if (paths.length === 0) {
+      return new IntPretty(0).ready(false);
+    }
+
+    const estimate = this.optimizedRoutes.calculateTokenOutByTokenIn(paths);
+    const multiplicationInOverOut = DecUtils.getTenExponentN(
+      this.outCurrency.coinDecimals - this.sendCurrency.coinDecimals
+    );
+    const beforeSpotPriceWithoutSwapFeeInOverOutDec =
+      estimate.beforeSpotPriceInOverOut.mulTruncate(
+        new Dec(1).sub(estimate.swapFee)
+      );
+
+    // low price vs in asset
+    if (
+      beforeSpotPriceWithoutSwapFeeInOverOutDec.isZero() ||
+      multiplicationInOverOut.isZero()
+    ) {
+      return new IntPretty(0).ready(false);
+    }
+
+    return new IntPretty(
+      new Dec(1)
+        .quoTruncate(beforeSpotPriceWithoutSwapFeeInOverOutDec)
+        .quoTruncate(multiplicationInOverOut)
+    );
   }
 
   @override
