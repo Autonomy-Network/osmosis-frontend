@@ -1,6 +1,5 @@
 import { observer } from "mobx-react-lite";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
 import { ProgressiveSvgImage } from "../components/progressive-svg-image";
 import { TradeClipboard } from "../components/trade-clipboard";
 import { TradeClipboard as AutonomyTradeClipboard } from "../components/autonomy/trade";
@@ -12,7 +11,6 @@ import { useMemo, useRef, useState } from "react";
 import classNames from "classnames";
 
 const Home: NextPage = observer(function () {
-  const router = useRouter();
   const [tradeType, setTradeType] = useState<"Swap" | "Limit" | "StopLoss">(
     "Swap"
   );
