@@ -13,12 +13,12 @@ export const SUBQUERY_BACKUP_ENDPOINTS: { [chainId: string]: string } = {
 export const REGISTRY_ADDRESSES: { [chainId: string]: string } = {
   'osmosis-1': '',
   'osmo-test-4':
-    'osmo1ayhrtxhusep8cztzwk4p4fl6tg9wy9xsgyvrh0z6gjcr6hp39exspngfy9',
+    'osmo124as70630wa94lpyyqjczc4ne0hsryycg3qdp40s5ljh8qr2nv8szqka4q',
 };
 
 export const WRAPPER_ADDRESSES: { [chainId: string]: string } = {
   'osmosis-1': '',
   'osmo-test-4':
-    'osmo1ec5xfelcwymfc76m6lhy2mjlxdchmutu0tzxxd4vtmaazwzr405sruqm3e',
+    'osmo1c5e5hn72fv24m35aavzv8z9unljfgm7yn0tp6uxtpdlyypmj530sm3sz03',
 };
 export const ENABLE_AUTONOMY = true;
