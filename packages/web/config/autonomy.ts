@@ -1,7 +1,6 @@
 export const SUBQUERY_ENDPOINTS: { [chainId: string]: string } = {
   'osmosis-1': '',
-  'osmo-test-4':
-    'https://api.subquery.network/sq/Autonomy-Network/osmosis4-testnet',
+  'osmo-test-4': 'https://api.subquery.network/sq/Autonomy-Network/osmosis-4',
 };
 
 export const SUBQUERY_BACKUP_ENDPOINTS: { [chainId: string]: string } = {
