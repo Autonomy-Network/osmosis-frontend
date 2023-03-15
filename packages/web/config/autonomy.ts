@@ -1,7 +1,6 @@
 export const SUBQUERY_ENDPOINTS: { [chainId: string]: string } = {
   'osmosis-1': '',
-  'osmo-test-4':
-    'https://api.subquery.network/sq/Autonomy-Network/osmosis4-testnet',
+  'osmo-test-4': 'https://api.subquery.network/sq/Autonomy-Network/osmosis-4',
 };
 
 export const SUBQUERY_BACKUP_ENDPOINTS: { [chainId: string]: string } = {
@@ -13,12 +12,12 @@ export const SUBQUERY_BACKUP_ENDPOINTS: { [chainId: string]: string } = {
 export const REGISTRY_ADDRESSES: { [chainId: string]: string } = {
   'osmosis-1': '',
   'osmo-test-4':
-    'osmo1ayhrtxhusep8cztzwk4p4fl6tg9wy9xsgyvrh0z6gjcr6hp39exspngfy9',
+    'osmo124as70630wa94lpyyqjczc4ne0hsryycg3qdp40s5ljh8qr2nv8szqka4q',
 };
 
 export const WRAPPER_ADDRESSES: { [chainId: string]: string } = {
   'osmosis-1': '',
   'osmo-test-4':
-    'osmo1ec5xfelcwymfc76m6lhy2mjlxdchmutu0tzxxd4vtmaazwzr405sruqm3e',
+    'osmo1xqgdqst5xjla5sfv6th7p2e5rw76jvqu9vmxqlveqffdc8539wzsnj4n9t',
 };
 export const ENABLE_AUTONOMY = true;
