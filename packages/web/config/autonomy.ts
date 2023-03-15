@@ -18,6 +18,6 @@ export const REGISTRY_ADDRESSES: { [chainId: string]: string } = {
 export const WRAPPER_ADDRESSES: { [chainId: string]: string } = {
   'osmosis-1': '',
   'osmo-test-4':
-    'osmo1c5e5hn72fv24m35aavzv8z9unljfgm7yn0tp6uxtpdlyypmj530sm3sz03',
+    'osmo1xqgdqst5xjla5sfv6th7p2e5rw76jvqu9vmxqlveqffdc8539wzsnj4n9t',
 };
 export const ENABLE_AUTONOMY = true;

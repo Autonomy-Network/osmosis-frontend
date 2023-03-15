@@ -818,18 +818,6 @@ export const TradeClipboard: FunctionComponent<{
             : "primary"
         }
         // className="flex justify-center items-center w-full h-[3.75rem] rounded-lg text-h6 md:text-button font-h6 md:font-button text-white-full shadow-elevation-04dp"
-        disabled={
-          account.walletStatus === WalletStatus.Loaded &&
-          (orderTokenInConfig.error !== undefined ||
-            orderTokenInConfig.optimizedRoutePaths.length === 0 ||
-            account.txTypeInProgress !== "" ||
-            (type === "Limit" &&
-              orderTokenInConfig.priceChangePercentage < 0 &&
-              !orderTokenInConfig.smallerRateEnabled) ||
-            (type === "StopLoss" &&
-              orderTokenInConfig.priceChangePercentage >= 0 &&
-              !orderTokenInConfig.largerRateEnabled))
-        }
         onClick={async () => {
           if (account.walletStatus !== WalletStatus.Loaded) {
             return account.init();
@@ -906,28 +894,23 @@ export const TradeClipboard: FunctionComponent<{
             try {
               const first = routes.shift();
               const swap = {
-                user: account.bech32Address,
-                amount: tokenInUAmount.toString(),
+                sender: account.bech32Address,
+                route: routes.map((route) => ({
+                  pool_id: route.poolId,
+                  denom_out: route.tokenOutCurrency.coinMinimalDenom,
+                })),
+                denom_in: tokenInCurrency.coinMinimalDenom,
+                amount_in: tokenInUAmount.toString(),
                 min_output: type === "Limit" ? tokenOutUAmount.toString() : "0",
                 max_output:
                   type === "Limit"
                     ? "18446744073709551615"
                     : tokenOutUAmount.toString(),
-                first: {
-                  pool_id: first!.poolId,
-                  denom_in: tokenInCurrency.coinMinimalDenom,
-                  denom_out: first!.tokenOutCurrency.coinMinimalDenom,
-                },
-                route: [],
+                denom_out: first!.tokenOutCurrency.coinMinimalDenom,
               } as any;
-              swap.route = routes.map((route) => ({
-                pool_id: route.poolId,
-                denom_out: route.tokenOutCurrency.coinMinimalDenom,
-              }));
               const msg = Buffer.from(JSON.stringify({ swap })).toString(
                 "base64"
               );
-
               const isNative =
                 tokenInCurrency.coinMinimalDenom.startsWith("u") ||
                 tokenInCurrency.coinMinimalDenom.startsWith("ibc/");
