@@ -253,6 +253,7 @@ export const TradeClipboard: FunctionComponent<{
           i++
         ) {
           const pool = tradeTokenInConfig.optimizedRoutePaths[0].pools[i];
+          console.log("real swap", pool)
           const tokenOutCurrency = chainStore.osmosisObservable.currencies.find(
             (cur) =>
               cur.coinMinimalDenom ===

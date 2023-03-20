@@ -222,24 +222,22 @@ export default function OrderHistory({
           }
         }
 
-        console.log("here");
-
         const allOrders: Order[] = [];
         (nodes as Request[]).map((request) => {
           const msg = JSON.parse(Buffer.from(request.msg, "base64").toString());
           const { swap } = msg;
-          if (!swap || !swap.first || !swap.route) return;
+          if (!swap || !swap.route) return;
           allOrders.push({
             id: Number(request.id),
             type: swap.min_output === "0" ? "StopLoss" : "Limit",
             status: request.status,
             createdAt: Math.floor(new Date(request.createdAt).getTime() / 1000),
-            inputToken: { denom: swap.first.denom_in, amount: swap.amount },
+            inputToken: { denom: swap.denom_in, amount: swap.amount_in },
             outputToken: {
               denom:
                 swap.route.length > 0
-                  ? swap.route[swap.route.length - 1].denom_out
-                  : swap.first.denom_out,
+                  ? swap.route[swap.route.length - 1].token_out_denom
+                  : swap.denom_out,
               amount:
                 swap.min_output === "0" ? swap.max_output : swap.min_output,
             },

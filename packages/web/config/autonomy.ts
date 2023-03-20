@@ -1,12 +1,13 @@
 export const SUBQUERY_ENDPOINTS: { [chainId: string]: string } = {
   'osmosis-1': '',
-  'osmo-test-4': 'https://api.subquery.network/sq/Autonomy-Network/osmosis-4',
+  'osmo-test-4':
+    'https://api.subquery.network/sq/Autonomy-Network/osmosis-testnet-autonomy',
 };
 
 export const SUBQUERY_BACKUP_ENDPOINTS: { [chainId: string]: string } = {
   'osmosis-1': '',
   'osmo-test-4':
-    'https://testnet.osmosis.subquery.autonomynetwork.alishahverdi.com/',
+    'https://api.subquery.network/sq/Autonomy-Network/osmosis-testnet-autonomy',
 };
 
 export const REGISTRY_ADDRESSES: { [chainId: string]: string } = {

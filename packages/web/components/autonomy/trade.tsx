@@ -886,7 +886,6 @@ export const TradeClipboard: FunctionComponent<{
               .truncate();
 
             const { tokenOutCurrency } = routes[routes.length - 1];
-            console.log("token out", tokenOutCurrency)
             const tokenOutUAmount = orderToeknInConfig.realOutputAmount
               .toDec()
               .mul(
@@ -899,7 +898,6 @@ export const TradeClipboard: FunctionComponent<{
             try {
               const copyRoute = [...routes];;
               const first = copyRoute.shift();
-              // console.log("first", first)
               const swap = {
                 user: account.bech32Address,
                 route: routes.map((route) => ({
