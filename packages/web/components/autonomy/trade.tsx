@@ -59,7 +59,7 @@ export const TradeClipboard: FunctionComponent<{
   const manualSlippageInputRef = useRef<HTMLInputElement | null>(null);
 
   const slippageConfig = useSlippageConfig();
-  const orderTokenInConfig = useOrderTokenInConfig(
+  const orderToeknInConfig = useOrderTokenInConfig(
     chainStore,
     chainId,
     account.bech32Address,
@@ -70,7 +70,7 @@ export const TradeClipboard: FunctionComponent<{
   // show details
   const [showEstimateDetails, setShowEstimateDetails] = useState(false);
   const isEstimateDetailRelevant = !(
-    orderTokenInConfig.amount === "" || orderTokenInConfig.amount === "0"
+    orderToeknInConfig.amount === "" || orderToeknInConfig.amount === "0"
   );
   useEffect(() => {
     // auto collapse on input clear
@@ -102,16 +102,16 @@ export const TradeClipboard: FunctionComponent<{
   const fromAmountInput = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
     fromAmountInput.current?.focus();
-  }, [orderTokenInConfig.sendCurrency]);
+  }, [orderToeknInConfig.sendCurrency]);
 
-  useTokenSwapQueryParams(orderTokenInConfig, allTokenBalances, isInModal);
+  useTokenSwapQueryParams(orderToeknInConfig, allTokenBalances, isInModal);
 
   const showPriceImpactWarning = useMemo(
     () =>
-      orderTokenInConfig.expectedSwapResult.priceImpact
+      orderToeknInConfig.expectedSwapResult.priceImpact
         .toDec()
         .gt(new Dec(0.1)),
-    [orderTokenInConfig.expectedSwapResult.priceImpact]
+    [orderToeknInConfig.expectedSwapResult.priceImpact]
   );
 
   useEffect(() => {
@@ -143,12 +143,12 @@ export const TradeClipboard: FunctionComponent<{
 
   const spotPrice = useMemo(
     () =>
-      orderTokenInConfig.beforeSpotPriceWithoutSwapFeeOutOverIn
+      orderToeknInConfig.beforeSpotPriceWithoutSwapFeeOutOverIn
         .trim(true)
-        .maxDecimals(orderTokenInConfig.outCurrency.coinDecimals),
+        .maxDecimals(orderToeknInConfig.outCurrency.coinDecimals),
     [
-      orderTokenInConfig.beforeSpotPriceWithoutSwapFeeOutOverIn,
-      orderTokenInConfig.outCurrency,
+      orderToeknInConfig.beforeSpotPriceWithoutSwapFeeOutOverIn,
+      orderToeknInConfig.outCurrency,
     ]
   );
 
@@ -166,7 +166,7 @@ export const TradeClipboard: FunctionComponent<{
         setSwitchOutBack(false);
       }, duration);
       timeout2 = setTimeout(() => {
-        orderTokenInConfig.switchInAndOut();
+        orderToeknInConfig.switchInAndOut();
         setSwitchOutBack(true);
       }, duration / 3);
     }
@@ -174,30 +174,30 @@ export const TradeClipboard: FunctionComponent<{
       if (timeout) clearTimeout(timeout);
       if (timeout2) clearTimeout(timeout2);
     };
-  }, [isAnimatingSwitch, orderTokenInConfig]);
+  }, [isAnimatingSwitch, orderToeknInConfig]);
 
   const inAmountValue =
-    orderTokenInConfig.amount !== "" &&
-    new Dec(orderTokenInConfig.amount).gt(new Dec(0))
+    orderToeknInConfig.amount !== "" &&
+    new Dec(orderToeknInConfig.amount).gt(new Dec(0))
       ? priceStore.calculatePrice(
           new CoinPretty(
-            orderTokenInConfig.sendCurrency,
-            new Dec(orderTokenInConfig.amount).mul(
+            orderToeknInConfig.sendCurrency,
+            new Dec(orderToeknInConfig.amount).mul(
               DecUtils.getTenExponentNInPrecisionRange(
-                orderTokenInConfig.sendCurrency.coinDecimals
+                orderToeknInConfig.sendCurrency.coinDecimals
               )
             )
           )
         )
       : undefined;
   const outAmountValue =
-    (!orderTokenInConfig.realOutputAmount.toDec().isZero() &&
+    (!orderToeknInConfig.realOutputAmount.toDec().isZero() &&
       priceStore.calculatePrice(
         new CoinPretty(
-          orderTokenInConfig.expectedSwapResult.amount.currency,
-          orderTokenInConfig.realOutputAmount
+          orderToeknInConfig.expectedSwapResult.amount.currency,
+          orderToeknInConfig.realOutputAmount
         )
-        // orderTokenInConfig.expectedSwapResult.amount
+        // orderToeknInConfig.expectedSwapResult.amount
       )) ||
     undefined;
 
@@ -306,8 +306,8 @@ export const TradeClipboard: FunctionComponent<{
                     logEvent([
                       EventName.Swap.slippageToleranceSet,
                       {
-                        fromToken: orderTokenInConfig.sendCurrency.coinDenom,
-                        toToken: orderTokenInConfig.outCurrency.coinDenom,
+                        fromToken: orderToeknInConfig.sendCurrency.coinDenom,
+                        toToken: orderToeknInConfig.outCurrency.coinDenom,
                         isOnHome: !isInModal,
                         percentage: slippageConfig.slippage.toString(),
                       },
@@ -362,10 +362,10 @@ export const TradeClipboard: FunctionComponent<{
               <span className="caption text-sm md:text-xs text-wosmongton-300 ml-1.5">
                 {queries.queryBalances
                   .getQueryBech32Address(account.bech32Address)
-                  .getBalanceFromCurrency(orderTokenInConfig.sendCurrency)
+                  .getBalanceFromCurrency(orderToeknInConfig.sendCurrency)
                   .trim(true)
                   .hideDenom(true)
-                  .maxDecimals(orderTokenInConfig.sendCurrency.coinDecimals)
+                  .maxDecimals(orderToeknInConfig.sendCurrency.coinDecimals)
                   .toString()}
               </span>
             </div>
@@ -373,23 +373,23 @@ export const TradeClipboard: FunctionComponent<{
               <BorderButton
                 className={classNames(
                   "text-xs py-1 px-1.5",
-                  orderTokenInConfig.fraction === 1
+                  orderToeknInConfig.fraction === 1
                     ? "bg-wosmongton-100/40"
                     : "bg-transparent"
                 )}
                 onClick={() => {
-                  if (orderTokenInConfig.fraction !== 1) {
+                  if (orderToeknInConfig.fraction !== 1) {
                     logEvent([
                       EventName.Swap.maxClicked,
                       {
-                        fromToken: orderTokenInConfig.sendCurrency.coinDenom,
-                        toToken: orderTokenInConfig.outCurrency.coinDenom,
+                        fromToken: orderToeknInConfig.sendCurrency.coinDenom,
+                        toToken: orderToeknInConfig.outCurrency.coinDenom,
                         isOnHome: !isInModal,
                       },
                     ]);
-                    orderTokenInConfig.setFraction(1);
+                    orderToeknInConfig.setFraction(1);
                   } else {
-                    orderTokenInConfig.setFraction(undefined);
+                    orderToeknInConfig.setFraction(undefined);
                   }
                 }}
               >
@@ -398,23 +398,23 @@ export const TradeClipboard: FunctionComponent<{
               <BorderButton
                 className={classNames(
                   "text-xs py-1 px-1.5",
-                  orderTokenInConfig.fraction === 0.5
+                  orderToeknInConfig.fraction === 0.5
                     ? "bg-wosmongton-100/40"
                     : "bg-transparent"
                 )}
                 onClick={() => {
-                  if (orderTokenInConfig.fraction !== 0.5) {
+                  if (orderToeknInConfig.fraction !== 0.5) {
                     logEvent([
                       EventName.Swap.halfClicked,
                       {
-                        fromToken: orderTokenInConfig.sendCurrency.coinDenom,
-                        toToken: orderTokenInConfig.outCurrency.coinDenom,
+                        fromToken: orderToeknInConfig.sendCurrency.coinDenom,
+                        toToken: orderToeknInConfig.outCurrency.coinDenom,
                         isOnHome: !isInModal,
                       },
                     ]);
-                    orderTokenInConfig.setFraction(0.5);
+                    orderToeknInConfig.setFraction(0.5);
                   } else {
-                    orderTokenInConfig.setFraction(undefined);
+                    orderToeknInConfig.setFraction(undefined);
                   }
                 }}
               >
@@ -437,24 +437,24 @@ export const TradeClipboard: FunctionComponent<{
                 .filter(
                   (tokenBalance) =>
                     tokenBalance.balance.currency.coinDenom !==
-                    orderTokenInConfig.outCurrency.coinDenom
+                    orderToeknInConfig.outCurrency.coinDenom
                 )
                 .filter((tokenBalance) =>
-                  orderTokenInConfig.sendableCurrencies.some(
+                  orderToeknInConfig.sendableCurrencies.some(
                     (sendableCurrency) =>
                       sendableCurrency.coinDenom ===
                       tokenBalance.balance.currency.coinDenom
                   )
                 )
                 .map((tokenBalance) => tokenBalance.balance)}
-              selectedTokenDenom={orderTokenInConfig.sendCurrency.coinDenom}
+              selectedTokenDenom={orderToeknInConfig.sendCurrency.coinDenom}
               onSelect={(tokenDenom: string) => {
                 const tokenInBalance = allTokenBalances.find(
                   (tokenBalance) =>
                     tokenBalance.balance.currency.coinDenom === tokenDenom
                 );
                 if (tokenInBalance) {
-                  orderTokenInConfig.setSendCurrency(
+                  orderToeknInConfig.setSendCurrency(
                     tokenInBalance.balance.currency
                   );
                 }
@@ -467,7 +467,7 @@ export const TradeClipboard: FunctionComponent<{
                 type="number"
                 className={classNames(
                   "md:text-subtitle1 text-white-full bg-transparent text-right focus:outline-none w-full placeholder:text-white-disabled",
-                  orderTokenInConfig.amount.length >= 14
+                  orderToeknInConfig.amount.length >= 14
                     ? "caption"
                     : "font-h5 md:font-subtitle1 text-h5"
                 )}
@@ -481,15 +481,15 @@ export const TradeClipboard: FunctionComponent<{
                     logEvent([
                       EventName.Swap.inputEntered,
                       {
-                        fromToken: orderTokenInConfig.sendCurrency.coinDenom,
-                        toToken: orderTokenInConfig.outCurrency.coinDenom,
+                        fromToken: orderToeknInConfig.sendCurrency.coinDenom,
+                        toToken: orderToeknInConfig.outCurrency.coinDenom,
                         isOnHome: !isInModal,
                       },
                     ]);
-                    orderTokenInConfig.setAmount(e.target.value);
+                    orderToeknInConfig.setAmount(e.target.value);
                   }
                 }}
-                value={orderTokenInConfig.amount}
+                value={orderToeknInConfig.amount}
               />
               <div
                 className={classNames(
@@ -520,8 +520,8 @@ export const TradeClipboard: FunctionComponent<{
             logEvent([
               EventName.Swap.switchClicked,
               {
-                fromToken: orderTokenInConfig.sendCurrency.coinDenom,
-                toToken: orderTokenInConfig.outCurrency.coinDenom,
+                fromToken: orderToeknInConfig.sendCurrency.coinDenom,
+                toToken: orderToeknInConfig.outCurrency.coinDenom,
                 isOnHome: !isInModal,
               },
             ]);
@@ -584,11 +584,11 @@ export const TradeClipboard: FunctionComponent<{
           <div className="flex justify-between items-center">
             <span className="subtitle1 md:subtitle2 text-white-full">Rate</span>
           </div>
-          {orderTokenInConfig && (
+          {orderToeknInConfig && (
             <div className="flex items-center">
               <button
                 className="button h-[1.375rem] border-2 border-primary-200 rounded-lg bg-primary-200/30 select-none hover:bg-primary-200/60"
-                onClick={() => orderTokenInConfig.setCurrentPrice()}
+                onClick={() => orderToeknInConfig.setCurrentPrice()}
               >
                 <span className="mx-2 text-caption">Current</span>
               </button>
@@ -599,10 +599,10 @@ export const TradeClipboard: FunctionComponent<{
                 onChange={(e) => {
                   e.preventDefault();
                   if (Number(e.target.value) <= Number.MAX_SAFE_INTEGER) {
-                    orderTokenInConfig.setPrice(e.target.value);
+                    orderToeknInConfig.setPrice(e.target.value);
                   }
                 }}
-                value={orderTokenInConfig.price}
+                value={orderToeknInConfig.price}
               />
             </div>
           )}
@@ -648,24 +648,24 @@ export const TradeClipboard: FunctionComponent<{
                 .filter(
                   (tokenBalance) =>
                     tokenBalance.balance.currency.coinDenom !==
-                    orderTokenInConfig.sendCurrency.coinDenom
+                    orderToeknInConfig.sendCurrency.coinDenom
                 )
                 .filter((tokenBalance) =>
-                  orderTokenInConfig.sendableCurrencies.some(
+                  orderToeknInConfig.sendableCurrencies.some(
                     (sendableCurrency) =>
                       sendableCurrency.coinDenom ===
                       tokenBalance.balance.currency.coinDenom
                   )
                 )
                 .map((tokenBalance) => tokenBalance.balance)}
-              selectedTokenDenom={orderTokenInConfig.outCurrency.coinDenom}
+              selectedTokenDenom={orderToeknInConfig.outCurrency.coinDenom}
               onSelect={(tokenDenom: string) => {
                 const tokenOutBalance = allTokenBalances.find(
                   (tokenBalance) =>
                     tokenBalance.balance.currency.coinDenom === tokenDenom
                 );
                 if (tokenOutBalance) {
-                  orderTokenInConfig.setOutCurrency(
+                  orderToeknInConfig.setOutCurrency(
                     tokenOutBalance.balance.currency
                   );
                 }
@@ -676,20 +676,20 @@ export const TradeClipboard: FunctionComponent<{
               <h5
                 className={classNames(
                   "text-right md:subtitle1",
-                  orderTokenInConfig.expectedSwapResult.amount
+                  orderToeknInConfig.expectedSwapResult.amount
                     .toDec()
                     .isPositive()
                     ? "text-white-full"
                     : "text-white-disabled"
                 )}
               >{`≈ ${
-                orderTokenInConfig.expectedSwapResult.amount.denom !== "UNKNOWN"
-                  ? orderTokenInConfig.realOutputAmount
+                orderToeknInConfig.expectedSwapResult.amount.denom !== "UNKNOWN"
+                  ? orderToeknInConfig.realOutputAmount
                       .trim(true)
                       .shrink(true)
                       .maxDecimals(
                         Math.min(
-                          orderTokenInConfig.expectedSwapResult.amount.currency
+                          orderToeknInConfig.expectedSwapResult.amount.currency
                             .coinDecimals,
                           8
                         )
@@ -733,16 +733,16 @@ export const TradeClipboard: FunctionComponent<{
               })}
             >
               {`1 ${
-                orderTokenInConfig.sendCurrency.coinDenom !== "UNKNOWN"
-                  ? orderTokenInConfig.sendCurrency.coinDenom
+                orderToeknInConfig.sendCurrency.coinDenom !== "UNKNOWN"
+                  ? orderToeknInConfig.sendCurrency.coinDenom
                   : ""
               } ≈ ${
                 spotPrice.toDec().lt(new Dec(1))
                   ? spotPrice.toString()
                   : spotPrice.maxDecimals(6).toString()
               } ${
-                orderTokenInConfig.outCurrency.coinDenom !== "UNKNOWN"
-                  ? orderTokenInConfig.outCurrency.coinDenom
+                orderToeknInConfig.outCurrency.coinDenom !== "UNKNOWN"
+                  ? orderToeknInConfig.outCurrency.coinDenom
                   : ""
               }`}
             </div>
@@ -788,7 +788,7 @@ export const TradeClipboard: FunctionComponent<{
                   showPriceImpactWarning ? "text-error" : "text-osmoverse-200"
                 )}
               >
-                {`-${orderTokenInConfig.expectedSwapResult.priceImpact.toString()}`}
+                {`-${orderToeknInConfig.expectedSwapResult.priceImpact.toString()}`}
               </div>
             </div>
             <div className="flex justify-between">
@@ -797,13 +797,13 @@ export const TradeClipboard: FunctionComponent<{
                 className={classNames(
                   "caption",
                   type === "Limit" &&
-                    orderTokenInConfig.priceChangePercentage >= 0
+                    orderToeknInConfig.priceChangePercentage >= 0
                     ? "text-success"
                     : "text-error"
                 )}
               >
-                {Math.abs(orderTokenInConfig.priceChangePercentage).toFixed(2)}%{" "}
-                {orderTokenInConfig.priceChangePercentage >= 0
+                {Math.abs(orderToeknInConfig.priceChangePercentage).toFixed(2)}%{" "}
+                {orderToeknInConfig.priceChangePercentage >= 0
                   ? "above "
                   : "below "}
               </div>
@@ -823,36 +823,40 @@ export const TradeClipboard: FunctionComponent<{
             return account.init();
           }
 
-          if (orderTokenInConfig.optimizedRoutePaths.length > 0) {
+          if (orderToeknInConfig.optimizedRoutePaths.length > 0) {
             const routes: {
-              poolId: number;
+              poolId: string;
               tokenOutCurrency: Currency;
             }[] = [];
 
             for (
               let i = 0;
-              i < orderTokenInConfig.optimizedRoutePaths[0].pools.length;
+              i < orderToeknInConfig.optimizedRoutePaths[0].pools.length;
               i++
             ) {
-              const pool = orderTokenInConfig.optimizedRoutePaths[0].pools[i];
+              const pool = orderToeknInConfig.optimizedRoutePaths[0].pools[i];
+              console.log("pool", pool)
               const tokenOutCurrency =
                 chainStore.osmosisObservable.currencies.find(
                   (cur) =>
                     cur.coinMinimalDenom ===
-                    orderTokenInConfig.optimizedRoutePaths[0].tokenOutDenoms[i]
+                    orderToeknInConfig.optimizedRoutePaths[0].tokenOutDenoms[i]
                 );
 
-              if (!tokenOutCurrency) {
-                orderTokenInConfig.setError(
-                  new Error(
-                    `Failed to find currency ${orderTokenInConfig.optimizedRoutePaths[0].tokenOutDenoms[i]}`
-                  )
-                );
-                return;
-              }
+                if (!tokenOutCurrency) {
+                  orderToeknInConfig.setError(
+                    new Error(
+                      t("swap.error.findCurrency", {
+                        currency:
+                          orderToeknInConfig.optimizedRoutePaths[0].tokenOutDenoms[i],
+                      })
+                    )
+                  );
+                  return;
+                }
 
               routes.push({
-                poolId: Number(pool.id),
+                poolId: pool.id,
                 tokenOutCurrency,
               });
             }
@@ -861,19 +865,19 @@ export const TradeClipboard: FunctionComponent<{
               chainStore.osmosisObservable.currencies.find(
                 (cur) =>
                   cur.coinMinimalDenom ===
-                  orderTokenInConfig.optimizedRoutePaths[0].tokenInDenom
+                  orderToeknInConfig.optimizedRoutePaths[0].tokenInDenom
               );
 
             if (!tokenInCurrency) {
-              orderTokenInConfig.setError(
+              orderToeknInConfig.setError(
                 new Error(
-                  `Failed to find currency ${orderTokenInConfig.optimizedRoutePaths[0].tokenInDenom}`
+                  `Failed to find currency ${orderToeknInConfig.optimizedRoutePaths[0].tokenInDenom}`
                 )
               );
               return;
             }
 
-            const tokenInUAmount = new Dec(orderTokenInConfig.amount)
+            const tokenInUAmount = new Dec(orderToeknInConfig.amount)
               .mul(
                 DecUtils.getTenExponentNInPrecisionRange(
                   tokenInCurrency.coinDecimals
@@ -882,7 +886,8 @@ export const TradeClipboard: FunctionComponent<{
               .truncate();
 
             const { tokenOutCurrency } = routes[routes.length - 1];
-            const tokenOutUAmount = orderTokenInConfig.realOutputAmount
+            console.log("token out", tokenOutCurrency)
+            const tokenOutUAmount = orderToeknInConfig.realOutputAmount
               .toDec()
               .mul(
                 DecUtils.getTenExponentNInPrecisionRange(
@@ -892,12 +897,14 @@ export const TradeClipboard: FunctionComponent<{
               .truncate();
 
             try {
-              const first = routes.shift();
+              const copyRoute = [...routes];;
+              const first = copyRoute.shift();
+              // console.log("first", first)
               const swap = {
-                sender: account.bech32Address,
+                user: account.bech32Address,
                 route: routes.map((route) => ({
                   pool_id: route.poolId,
-                  denom_out: route.tokenOutCurrency.coinMinimalDenom,
+                  token_out_denom: route.tokenOutCurrency.coinMinimalDenom,
                 })),
                 denom_in: tokenInCurrency.coinMinimalDenom,
                 amount_in: tokenInUAmount.toString(),
@@ -960,7 +967,7 @@ export const TradeClipboard: FunctionComponent<{
               } else {
                 funds.push({
                   denom: "uosmo",
-                  amount: new Dec(orderTokenInConfig.amount)
+                  amount: new Dec(orderToeknInConfig.amount)
                     .mul(
                       DecUtils.getTenExponentNInPrecisionRange(
                         tokenInCurrency.coinDecimals
@@ -991,8 +998,8 @@ export const TradeClipboard: FunctionComponent<{
                 undefined,
                 (e) => console.log(e)
               );
-              orderTokenInConfig.setAmount("");
-              orderTokenInConfig.setFraction(undefined);
+              orderToeknInConfig.setAmount("");
+              orderToeknInConfig.setFraction(undefined);
             } catch (e) {
               console.error(e);
             }
@@ -1000,8 +1007,8 @@ export const TradeClipboard: FunctionComponent<{
         }}
       >
         {account.walletStatus === WalletStatus.Loaded ? (
-          orderTokenInConfig.error ? (
-            orderTokenInConfig.error.message
+          orderToeknInConfig.error ? (
+            orderToeknInConfig.error.message
           ) : showPriceImpactWarning ? (
             "Place Order Anyway"
           ) : (
