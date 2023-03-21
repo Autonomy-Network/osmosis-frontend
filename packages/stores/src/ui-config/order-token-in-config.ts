@@ -452,6 +452,9 @@ export class ObservableOrderTokenInConfig extends AmountConfig {
     if (this.amount === "" || this.price === "") {
       return new IntPretty("0");
     }
+    if (this.price[0] === ".") {
+      this.setPrice(`0${this.price}`);
+    }
     const amount = new Dec(this.amount);
     const price = new Dec(this.price);
     const outputAmount = new IntPretty(amount.mulTruncate(price));
