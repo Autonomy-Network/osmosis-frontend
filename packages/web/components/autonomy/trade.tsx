@@ -906,7 +906,7 @@ export const TradeClipboard: FunctionComponent<{
                 })),
                 denom_in: tokenInCurrency.coinMinimalDenom,
                 amount_in: tokenInUAmount.toString(),
-                min_output: type === "Limit" ? tokenOutUAmount.toString() : "0",
+                min_output: type === "Limit" ? tokenOutUAmount.toString() : (Number(tokenOutUAmount) * 0.80).toFixed(0).toString() ,
                 max_output:
                   type === "Limit"
                     ? "18446744073709551615"
