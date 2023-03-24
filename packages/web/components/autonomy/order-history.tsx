@@ -240,7 +240,7 @@ export default function OrderHistory({
                   ? swap.route[swap.route.length - 1].token_out_denom
                   : swap.denom_out,
               amount:
-                swap.min_output === "0" ? swap.max_output : swap.min_output,
+                swap.min_output === (Number(swap.max_output) * 0.80).toFixed(0).toString() ? swap.max_output : swap.min_output,
             },
           });
         });
