@@ -1,11 +1,11 @@
 export const SUBQUERY_ENDPOINTS: { [chainId: string]: string } = {
-  'osmosis-1': '',
+  'osmosis-1': 'https://subquery.mainnet.osmosis.alishahverdi.com/',
   'osmo-test-4':
     'https://api.subquery.network/sq/Autonomy-Network/osmosis-testnet-autonomy',
 };
 
 export const SUBQUERY_BACKUP_ENDPOINTS: { [chainId: string]: string } = {
-  'osmosis-1': '',
+  'osmosis-1': 'https://subquery.mainnet.osmosis.alishahverdi.com/',
   'osmo-test-4':
     'https://api.subquery.network/sq/Autonomy-Network/osmosis-testnet-autonomy',
 };

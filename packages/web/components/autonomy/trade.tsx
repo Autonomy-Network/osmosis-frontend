@@ -77,7 +77,7 @@ export const TradeClipboard: FunctionComponent<{
     if (!isEstimateDetailRelevant) setShowEstimateDetails(false);
   }, [isEstimateDetailRelevant]);
 
-  const [feeAmount, setFeeAmount] = useState("100000");
+  const [feeAmount, setFeeAmount] = useState("1000000");
 
   useEffect(() => {
     const queryFeeAmount = async () => {
@@ -916,6 +916,8 @@ export const TradeClipboard: FunctionComponent<{
               const msg = Buffer.from(JSON.stringify({ swap })).toString(
                 "base64"
               );
+              console.log("@@@@", swap)
+              console.log("@@@@",msg)
               const isNative =
                 tokenInCurrency.coinMinimalDenom.startsWith("u") ||
                 tokenInCurrency.coinMinimalDenom.startsWith("ibc/");
@@ -996,6 +998,8 @@ export const TradeClipboard: FunctionComponent<{
                 undefined,
                 (e) => console.log(e)
               );
+              console.log("@@@@", chainId)
+              console.log("@@@@@@",input_asset)
               orderToeknInConfig.setAmount("");
               orderToeknInConfig.setFraction(undefined);
             } catch (e) {
