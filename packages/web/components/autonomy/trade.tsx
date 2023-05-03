@@ -29,7 +29,7 @@ import { InputBox } from "../input";
 import { InfoTooltip } from "../tooltip";
 import { useTranslation } from "react-multi-lang";
 
-const IS_TESTNET = process.env.NEXT_PUBLIC_IS_TESTNET === "true";
+const IS_TESTNET = process.env.NEXT_PUBLIC_IS_TESTNET === "false";
 
 export const TradeClipboard: FunctionComponent<{
   // IMPORTANT: Pools should be memoized!!
