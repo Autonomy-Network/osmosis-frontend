@@ -77,7 +77,7 @@ export const TradeClipboard: FunctionComponent<{
     if (!isEstimateDetailRelevant) setShowEstimateDetails(false);
   }, [isEstimateDetailRelevant]);
 
-  const [feeAmount, setFeeAmount] = useState("1000000");
+  const [feeAmount, setFeeAmount] = useState("300000");
 
   useEffect(() => {
     const queryFeeAmount = async () => {
