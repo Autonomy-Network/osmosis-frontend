@@ -28,8 +28,8 @@ import { ModSelect } from "../control/mode-select";
 export const TradeClipboard: FunctionComponent<{
   // IMPORTANT: Pools should be memoized!!
   pools: Pool[];
-  tradeType: string;
-  setTradeType: any;
+  tradeType?: string;
+  setTradeType?: any;
   containerClassName?: string;
   isInModal?: boolean;
   onRequestModalClose?: () => void;
@@ -404,10 +404,12 @@ export const TradeClipboard: FunctionComponent<{
       >
         <div className="relative flex items-center justify-end w-full">
           <div className="absolute left-0 ">
-            <ModSelect
-              onChange={(e: any) => setTradeType(e.value)}
-              selectedMod={tradeType}
-            />
+            {tradeType && (
+              <ModSelect
+                onChange={(e: any) => setTradeType(e.value)}
+                selectedMod={tradeType}
+              />
+            )}
           </div>
 
           <div className="w-full text-center">
