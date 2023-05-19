@@ -185,46 +185,34 @@ const Home: NextPage = observer(function () {
       </div>
       <div
         className={classNames(
-          "flex h-full w-full flex-col",
+          "flex h-full w-full flex-col relative",
           tradeType === "Swap"
-            ? "justify-center overflow-y-auto overflow-x-hidden"
+            ? " overflow-y-auto overflow-x-hidden"
             : "overflow-y-auto overflow-x-hidden"
         )}
       >
-        {true && (
-          <div className="z-100 ml-auto mr-[15%] mb-3 w-[27rem] lg:mx-auto">
-            <div className="relative flex flex-row gap-8 rounded-[18px] bg-osmoverse-800 px-5 py-4 md:px-3">
-              <div
-                className="mr-3 flex-auto cursor-pointer px-4 py-2 text-center font-bold"
-                onClick={() => setTradeType("Swap")}
-              >
-                Swap
-              </div>
-              <div
-                className="mr-3 flex-auto cursor-pointer px-4 py-2 text-center font-bold"
-                onClick={() => setTradeType("Limit")}
-              >
-                Limit Order
-              </div>
-              <div
-                className="flex-auto cursor-pointer px-4 py-2 text-center font-bold"
-                onClick={() => setTradeType("StopLoss")}
-              >
-                Stop Loss
-              </div>
+        {/* {true && (
+            <div className="absolute top-4 right-0">
+              <ModSelect
+                onChange={(e) => setTradeType(e.value)}
+                selectedMod={tradeType}
+              />
             </div>
-          </div>
-        )}
+        )} */}
         {tradeType === "Swap" ? (
           <TradeClipboard
             containerClassName="w-[27rem] ml-auto mr-[15%] lg:mx-auto"
             pools={pools}
+            tradeType={tradeType}
+            setTradeType={setTradeType}
           />
         ) : (
           <>
             <AutonomyTradeClipboard
               pools={pools}
               type={tradeType}
+              tradeType={tradeType}
+              setTradeType={setTradeType}
               containerClassName="w-[27rem] ml-auto mr-[15%] lg:mx-auto"
             />
           </>

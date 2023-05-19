@@ -45,7 +45,7 @@ export const MenuDropdownIconItem: FunctionComponent<Props> = ({
           />
         </div>
       )}
-      <p className="ml-3">{t(option.display.toString())}</p>
+      <p className="ml-3 whitespace-nowrap">{t(option.display.toString())}</p>
     </button>
   );
 };

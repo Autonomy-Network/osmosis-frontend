@@ -23,16 +23,25 @@ import { InputBox } from "../input";
 import { InfoTooltip } from "../tooltip";
 import { useTranslation } from "react-multi-lang";
 import { tError } from "../localization";
+import { ModSelect } from "../control/mode-select";
 
 export const TradeClipboard: FunctionComponent<{
   // IMPORTANT: Pools should be memoized!!
   pools: Pool[];
-
+  tradeType: string;
+  setTradeType: any;
   containerClassName?: string;
   isInModal?: boolean;
   onRequestModalClose?: () => void;
 }> = observer(
-  ({ containerClassName, pools, isInModal, onRequestModalClose }) => {
+  ({
+    containerClassName,
+    pools,
+    isInModal,
+    onRequestModalClose,
+    tradeType,
+    setTradeType,
+  }) => {
     const {
       chainStore,
       accountStore,
@@ -253,7 +262,7 @@ export const TradeClipboard: FunctionComponent<{
           i++
         ) {
           const pool = tradeTokenInConfig.optimizedRoutePaths[0].pools[i];
-          console.log("real swap", pool)
+          console.log("real swap", pool);
           const tokenOutCurrency = chainStore.osmosisObservable.currencies.find(
             (cur) =>
               cur.coinMinimalDenom ===
@@ -394,7 +403,17 @@ export const TradeClipboard: FunctionComponent<{
         )}
       >
         <div className="relative flex items-center justify-end w-full">
-          <h6 className="w-full text-center">{t("swap.title")}</h6>
+          <div className="absolute left-0 ">
+            <ModSelect
+              onChange={(e: any) => setTradeType(e.value)}
+              selectedMod={tradeType}
+            />
+          </div>
+
+          <div className="w-full text-center">
+            <h6 className="w-full text-center">{t("swap.title")}</h6>
+          </div>
+
           <button
             className="absolute right-3 top-0"
             onClick={(e) => {

@@ -799,7 +799,7 @@ export const IBCAssetInfos: (IBCAsset & {
     coinMinimalDenom: "aechelon",
     depositUrlOverride: "https://app.ech.network/ibc",
     withdrawUrlOverride: "https://app.ech.network/ibc",
-    },
+  },
   /*
   {
     counterpartyChainId: "echelon_3000-3",

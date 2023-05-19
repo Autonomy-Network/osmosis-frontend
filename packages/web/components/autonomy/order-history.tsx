@@ -226,11 +226,15 @@ export default function OrderHistory({
         (nodes as Request[]).map((request) => {
           const msg = JSON.parse(Buffer.from(request.msg, "base64").toString());
           const { swap } = msg;
-          console.log(swap)
+          console.log(swap);
           if (!swap || !swap.route) return;
           allOrders.push({
             id: Number(request.id),
-            type: swap.min_output === (Number(swap.max_output) * 0.80).toFixed(0).toString() ? "StopLoss" : "Limit",
+            type:
+              swap.min_output ===
+              (Number(swap.max_output) * 0.8).toFixed(0).toString()
+                ? "StopLoss"
+                : "Limit",
             status: request.status,
             createdAt: Math.floor(new Date(request.createdAt).getTime() / 1000),
             inputToken: { denom: swap.denom_in, amount: swap.amount_in },
@@ -240,7 +244,10 @@ export default function OrderHistory({
                   ? swap.route[swap.route.length - 1].token_out_denom
                   : swap.denom_out,
               amount:
-                swap.min_output === (Number(swap.max_output) * 0.80).toFixed(0).toString() ? swap.max_output : swap.min_output,
+                swap.min_output ===
+                (Number(swap.max_output) * 0.8).toFixed(0).toString()
+                  ? swap.max_output
+                  : swap.min_output,
             },
           });
         });
