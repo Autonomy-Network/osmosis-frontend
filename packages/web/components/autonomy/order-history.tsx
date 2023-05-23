@@ -150,11 +150,11 @@ const OrderRow = ({ order }: { order: Order }) => {
 };
 const OrderRows = ({ orders }: { orders: Order[] }) => {
   return (
-    <>
+    <div className="max-h-[450px] overflow-y-auto">
       {orders.map((order) => (
         <OrderRow key={order.id} order={order} />
       ))}
-    </>
+    </div>
   );
 };
 
