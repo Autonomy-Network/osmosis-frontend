@@ -271,7 +271,7 @@ export default function OrderHistory({
   return (
     <div
       className={classNames(
-        "bg-card relative my-4 ml-auto mr-[15%] w-[27rem] rounded-2xl bg-osmoverse-800 px-4 lg:mx-auto md:border-0",
+        " relative rounded-[18px] my-4 flex flex-col gap-8 bg-osmoverse-800 px-5 md:px-3 pt-12 md:pt-4 pb-7 md:pb-4",
         containerClassName
       )}
     >

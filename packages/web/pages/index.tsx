@@ -182,7 +182,7 @@ const Home: NextPage = observer(function () {
           </g>
         </svg>
       </div>
-      <div className="flex flex-col w-full items-center">
+      <div className="flex flex-col w-full items-center px-2">
         {/* {true && (
             <div className="absolute top-4 right-0">
               <ModSelect
