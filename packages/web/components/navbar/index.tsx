@@ -17,7 +17,7 @@ export const NavBar: FunctionComponent<
     backElementClassNames?: string;
     menus: MainLayoutMenu[];
   } & CustomClasses
-> = observer(({ title, className, backElementClassNames, menus }) => {
+> = observer(({ className, backElementClassNames, menus }) => {
   const { navBarStore, userSettings } = useStore();
 
   // settings button
@@ -72,9 +72,7 @@ export const NavBar: FunctionComponent<
           )}
         </div>
         <div className="grow flex items-center md:place-content-between shrink-0 gap-9 lg:gap-2 md:gap-1">
-          <h4 className="md:font-h6 md:text-h6">
-            Limits and Stops 
-          </h4>
+          <h4 className="md:font-h6 md:text-h6">Limits and Stops</h4>
           <div className="flex items-center gap-3 lg:gap-1">
             {navBarStore.callToActionButtons.map((button, index) => (
               <Button

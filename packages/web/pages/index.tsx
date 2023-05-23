@@ -8,7 +8,6 @@ import { useStore } from "../stores";
 import { IS_FRONTIER, EventName } from "../config";
 import { Dec } from "@keplr-wallet/unit";
 import { useMemo, useRef, useState } from "react";
-import classNames from "classnames";
 import { useAmplitudeAnalytics } from "../hooks";
 
 const Home: NextPage = observer(function () {
