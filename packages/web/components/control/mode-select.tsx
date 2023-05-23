@@ -17,7 +17,7 @@ const options = [
   },
   {
     value: "StopLoss",
-    display: "Stop Loss",
+    display: "Stop",
   },
 ];
 

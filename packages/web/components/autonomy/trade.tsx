@@ -27,7 +27,7 @@ import { useTranslation } from "react-multi-lang";
 import { ModSelect } from "../control/mode-select";
 // import TradeRoute from "../trade-clipboard/trade-route";
 
-const IS_TESTNET = process.env.NEXT_PUBLIC_IS_TESTNET === "false";
+// const IS_TESTNET = process.env.NEXT_PUBLIC_IS_TESTNET === "false";
 
 export const TradeClipboard: FunctionComponent<{
   // IMPORTANT: Pools should be memoized!!
@@ -87,24 +87,22 @@ export const TradeClipboard: FunctionComponent<{
 
     const [feeAmount, setFeeAmount] = useState("300000");
 
-    // useEffect(() => {
-    //   const queryFeeAmount = async () => {
-    //     const client = await CosmWasmClient.connect(
-    //       IS_TESTNET
-    //         ? "https://rpc.testnet.osmosis.zone/"
-    //         : "https://rpc-osmosis.keplr.app/"
-    //     );
+    useEffect(() => {
+      const queryFeeAmount = async () => {
+        const client = await CosmWasmClient.connect(
+          "https://rpc-osmosis.keplr.app/"
+        );
 
-    //     const config = await client.queryContractSmart(
-    //       REGISTRY_ADDRESSES[chainId],
-    //       {
-    //         config: {},
-    //       }
-    //     );
-    //     setFeeAmount(config.fee_amount);
-    //   };
-    //   queryFeeAmount();
-    // }, []);
+        const config = await client.queryContractSmart(
+          REGISTRY_ADDRESSES[chainId],
+          {
+            config: {},
+          }
+        );
+        setFeeAmount(config.fee_amount);
+      };
+      queryFeeAmount();
+    }, []);
 
     // auto focus from amount on token switch
     const fromAmountInput = useRef<HTMLInputElement | null>(null);
@@ -1010,8 +1008,6 @@ export const TradeClipboard: FunctionComponent<{
                 const msg = Buffer.from(JSON.stringify({ swap })).toString(
                   "base64"
                 );
-                console.log("@@@@", swap);
-                console.log("@@@@", msg);
                 const isNative =
                   tokenInCurrency.coinMinimalDenom.startsWith("u") ||
                   tokenInCurrency.coinMinimalDenom.startsWith("ibc/");
@@ -1092,8 +1088,6 @@ export const TradeClipboard: FunctionComponent<{
                   undefined,
                   (e) => console.log(e)
                 );
-                console.log("@@@@", chainId);
-                console.log("@@@@@@", input_asset);
                 orderToeknInConfig.setAmount("");
                 orderToeknInConfig.setFraction(undefined);
               } catch (e) {

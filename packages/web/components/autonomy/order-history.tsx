@@ -128,6 +128,7 @@ const OrderRow = ({ order }: { order: Order }) => {
               className="ml-4 md:mt-4 md:w-1/2"
               disabled={account.txTypeInProgress !== ""}
               onClick={handleCancelOrder}
+              size="sm"
             >
               Cancel
             </Button>
@@ -167,6 +168,7 @@ export default function OrderHistory({
   const { chainStore, accountStore } = useStore();
   const { chainId, rpc } = chainStore.osmosis;
   const account = accountStore.getAccount(chainId);
+  let accountChecker = Object.create(account);
   const [orders, setOrders] = useState<Order[]>([]);
 
   const orderByStatus = (status: string) =>
@@ -176,8 +178,7 @@ export default function OrderHistory({
 
   useEffect(() => {
     const fetchHistory = async () => {
-      if (account.bech32Address) {
-        // console.log("fetch", account.bech32Address);
+      if (accountChecker.hasInited) {
         // const keplr = await account.getKeplr();
         // if (!keplr) return;
 
@@ -227,7 +228,6 @@ export default function OrderHistory({
         (nodes as Request[]).map((request) => {
           const msg = JSON.parse(Buffer.from(request.msg, "base64").toString());
           const { swap } = msg;
-          console.log(swap);
           if (!swap || !swap.route) return;
           allOrders.push({
             id: Number(request.id),
@@ -253,6 +253,8 @@ export default function OrderHistory({
           });
         });
         setOrders(allOrders.sort((a, b) => b.id - a.id));
+      } else if (!accountChecker.hasInited) {
+        setOrders([]);
       }
     };
 
@@ -269,7 +271,7 @@ export default function OrderHistory({
   return (
     <div
       className={classNames(
-        "bg-card relative my-4 ml-auto rounded-2xl bg-osmoverse-800 px-4 lg:mx-auto md:border-0",
+        "bg-card relative my-4 ml-auto mr-[15%] w-[27rem] rounded-2xl bg-osmoverse-800 px-4 lg:mx-auto md:mt-mobile-header md:border-0 md:p-0",
         containerClassName
       )}
     >
