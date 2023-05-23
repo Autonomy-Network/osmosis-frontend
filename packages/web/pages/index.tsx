@@ -13,7 +13,7 @@ import { useAmplitudeAnalytics } from "../hooks";
 
 const Home: NextPage = observer(function () {
   const [tradeType, setTradeType] = useState<"Swap" | "Limit" | "StopLoss">(
-    "Swap"
+    "Limit"
   );
   const { chainStore, queriesStore } = useStore();
   const { chainId } = chainStore.osmosis;
@@ -145,7 +145,7 @@ const Home: NextPage = observer(function () {
 
   return (
     <main className="relative h-full bg-osmoverse-900">
-      <div className="absolute h-full w-full bg-home-bg-pattern bg-cover bg-repeat-x">
+      <div className="h-full w-full bg-home-bg-pattern bg-cover bg-repeat-x fixed">
         <svg
           className="absolute h-full w-full lg:hidden"
           pointerEvents="none"
@@ -183,14 +183,7 @@ const Home: NextPage = observer(function () {
           </g>
         </svg>
       </div>
-      <div
-        className={classNames(
-          "flex h-full w-full flex-col relative",
-          tradeType === "Swap"
-            ? " overflow-y-auto overflow-x-hidden"
-            : "overflow-y-auto overflow-x-hidden"
-        )}
-      >
+      <div className="flex flex-col w-full items-center">
         {/* {true && (
             <div className="absolute top-4 right-0">
               <ModSelect
@@ -201,7 +194,7 @@ const Home: NextPage = observer(function () {
         )} */}
         {tradeType === "Swap" ? (
           <TradeClipboard
-            containerClassName="w-[27rem] ml-auto mr-[15%] lg:mx-auto"
+            containerClassName="max-w-[27rem] w-full md:mt-mobile-header ml-auto mr-[15%] lg:mx-auto"
             pools={pools}
             tradeType={tradeType}
             setTradeType={setTradeType}
@@ -213,13 +206,14 @@ const Home: NextPage = observer(function () {
               type={tradeType}
               tradeType={tradeType}
               setTradeType={setTradeType}
-              containerClassName="w-[27rem] ml-auto mr-[15%] lg:mx-auto"
+              containerClassName="max-w-[27rem] w-full md:mt-mobile-header ml-auto mr-[15%] lg:mx-auto"
             />
           </>
         )}
+
         <OrderHistory
           orderType={tradeType}
-          containerClassName="w-[27rem] ml-auto mr-[15%] lg:mx-auto"
+          containerClassName="max-w-[27rem] w-full ml-auto mr-[15%] lg:mx-auto"
         />
       </div>
     </main>

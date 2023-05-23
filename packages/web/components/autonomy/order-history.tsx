@@ -89,8 +89,8 @@ const OrderRow = ({ order }: { order: Order }) => {
       key={order.id}
       className="mb-4 w-full rounded-2xl bg-osmoverse-900 p-px text-left hover:bg-none"
     >
-      <div className="bg-card flex h-full w-full cursor-pointer flex-col place-content-between rounded-2xlinset p-4">
-        <div className="flex items-center justify-between">
+      <div className="bg-card flex h-full w-full cursor-pointer flex-col place-content-between rounded-2x linset p-4">
+        <div className="flex items-center justify-between flex-row md:flex-col">
           <div className="flex items-center">
             <div className="flex items-center">
               <div className="h-8 w-8 overflow-hidden rounded-full md:h-5 md:w-5">
@@ -125,7 +125,7 @@ const OrderRow = ({ order }: { order: Order }) => {
           {order.status === "created" && (
             <Button
               mode="primary-warning"
-              className="ml-4"
+              className="ml-4 md:mt-4 md:w-1/2"
               disabled={account.txTypeInProgress !== ""}
               onClick={handleCancelOrder}
             >
@@ -176,9 +176,10 @@ export default function OrderHistory({
 
   useEffect(() => {
     const fetchHistory = async () => {
-      if (account) {
-        const keplr = await account.getKeplr();
-        if (!keplr) return;
+      if (account.bech32Address) {
+        // console.log("fetch", account.bech32Address);
+        // const keplr = await account.getKeplr();
+        // if (!keplr) return;
 
         const query = gql`
         query {
@@ -257,16 +258,18 @@ export default function OrderHistory({
 
     const interval = setInterval(fetchHistory, 4000);
     return () => clearInterval(interval);
-  }, [rpc, account, chainId]);
+  }, [rpc, account.bech32Address, chainId]);
 
   if (orderType === "Swap") {
     return <></>;
   }
+  // console.log(account.bech32Address);
+  if (!account.bech32Address) return <></>;
 
   return (
     <div
       className={classNames(
-        "bg-card relative my-4 ml-auto mr-[15%] w-[27rem] rounded-2xl border-2 bg-osmoverse-800 px-4 lg:mx-auto md:mt-mobile-header md:border-0 md:p-0",
+        "bg-card relative my-4 ml-auto rounded-2xl bg-osmoverse-800 px-4 lg:mx-auto md:border-0",
         containerClassName
       )}
     >

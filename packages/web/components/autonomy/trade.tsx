@@ -25,6 +25,7 @@ import { InputBox } from "../input";
 import { InfoTooltip } from "../tooltip";
 import { useTranslation } from "react-multi-lang";
 import { ModSelect } from "../control/mode-select";
+import TradeRoute from "../trade-clipboard/trade-route";
 
 const IS_TESTNET = process.env.NEXT_PUBLIC_IS_TESTNET === "false";
 
@@ -86,24 +87,24 @@ export const TradeClipboard: FunctionComponent<{
 
     const [feeAmount, setFeeAmount] = useState("300000");
 
-    useEffect(() => {
-      const queryFeeAmount = async () => {
-        const client = await CosmWasmClient.connect(
-          IS_TESTNET
-            ? "https://rpc.testnet.osmosis.zone/"
-            : "https://rpc-osmosis.keplr.app/"
-        );
+    // useEffect(() => {
+    //   const queryFeeAmount = async () => {
+    //     const client = await CosmWasmClient.connect(
+    //       IS_TESTNET
+    //         ? "https://rpc.testnet.osmosis.zone/"
+    //         : "https://rpc-osmosis.keplr.app/"
+    //     );
 
-        const config = await client.queryContractSmart(
-          REGISTRY_ADDRESSES[chainId],
-          {
-            config: {},
-          }
-        );
-        setFeeAmount(config.fee_amount);
-      };
-      queryFeeAmount();
-    }, []);
+    //     const config = await client.queryContractSmart(
+    //       REGISTRY_ADDRESSES[chainId],
+    //       {
+    //         config: {},
+    //       }
+    //     );
+    //     setFeeAmount(config.fee_amount);
+    //   };
+    //   queryFeeAmount();
+    // }, []);
 
     // auto focus from amount on token switch
     const fromAmountInput = useRef<HTMLInputElement | null>(null);
@@ -147,6 +148,14 @@ export const TradeClipboard: FunctionComponent<{
       setFromTokenSelectDropdownLocal(false);
       setToTokenSelectDropdownLocal(false);
     };
+
+    const minOutAmountLessSlippage = useMemo(
+      () =>
+        orderToeknInConfig.expectedSwapResult.amount
+          .toDec()
+          .mul(new Dec(1).sub(slippageConfig.slippage.toDec())),
+      [orderToeknInConfig.expectedSwapResult.amount, slippageConfig.slippage]
+    );
 
     const spotPrice = useMemo(
       () =>
@@ -728,7 +737,7 @@ export const TradeClipboard: FunctionComponent<{
           <div
             className={classNames(
               "relative rounded-lg bg-osmoverse-900 px-4 md:px-3 transition-all ease-inOutBack duration-300 overflow-hidden",
-              showEstimateDetails ? "h-32 py-6" : "h-11 py-[10px]"
+              showEstimateDetails ? "h-56 py-6" : "h-11 py-[10px]"
             )}
           >
             <button
@@ -808,29 +817,82 @@ export const TradeClipboard: FunctionComponent<{
                 </div>
               </div>
               <div className="flex justify-between">
-                <div className="caption">Compare to Market Price</div>
-                <div
-                  className={classNames(
-                    "caption",
-                    type === "Limit" &&
-                      orderToeknInConfig.priceChangePercentage >= 0
-                      ? "text-success"
-                      : "text-error"
-                  )}
-                >
-                  {Math.abs(orderToeknInConfig.priceChangePercentage).toFixed(
-                    2
-                  )}
-                  %{" "}
-                  {orderToeknInConfig.priceChangePercentage >= 0
-                    ? "above "
-                    : "below "}
+                <div className="caption">
+                  {t("swap.fee", {
+                    fee: orderToeknInConfig.expectedSwapResult.swapFee.toString(),
+                  })}
+                </div>
+                <div className="caption text-osmoverse-200">
+                  {`≈ ${
+                    priceStore.calculatePrice(
+                      orderToeknInConfig.expectedSwapResult.tokenInFeeAmount
+                    ) ?? "0"
+                  } `}
                 </div>
               </div>
+              <hr className="text-white-faint" />
+              <div className="flex justify-between">
+                <div className="caption">{t("swap.expectedOutput")}</div>
+                <div className="caption text-osmoverse-200 whitespace-nowrap">
+                  {`≈ ${orderToeknInConfig.expectedSwapResult.amount.toString()} `}
+                </div>
+              </div>
+              <div className="flex justify-between">
+                <div className="caption">
+                  {t("swap.minimumSlippage", {
+                    slippage: slippageConfig.slippage.trim(true).toString(),
+                  })}
+                </div>
+                <div
+                  className={classNames(
+                    "caption flex flex-col text-right gap-0.5 text-osmoverse-200"
+                  )}
+                >
+                  <span className="whitespace-nowrap">
+                    {new CoinPretty(
+                      orderToeknInConfig.outCurrency,
+                      minOutAmountLessSlippage.mul(
+                        DecUtils.getTenExponentNInPrecisionRange(
+                          orderToeknInConfig.outCurrency.coinDecimals
+                        )
+                      )
+                    ).toString()}
+                  </span>
+                  <span>
+                    {`≈ ${
+                      priceStore.calculatePrice(
+                        new CoinPretty(
+                          orderToeknInConfig.outCurrency,
+                          minOutAmountLessSlippage.mul(
+                            DecUtils.getTenExponentNInPrecisionRange(
+                              orderToeknInConfig.outCurrency.coinDecimals
+                            )
+                          )
+                        )
+                      ) || "0"
+                    }`}
+                  </span>
+                </div>
+              </div>
+              {!isInModal &&
+                orderToeknInConfig.optimizedRoutePaths
+                  .slice(0, 1)
+                  .map((route, index) => (
+                    <TradeRoute
+                      key={index}
+                      sendCurrency={orderToeknInConfig.sendCurrency}
+                      outCurrency={orderToeknInConfig.outCurrency}
+                      route={route}
+                      isMultihopOsmoFeeDiscount={
+                        orderToeknInConfig.expectedSwapResult
+                          .isMultihopOsmoFeeDiscount
+                      }
+                    />
+                  ))}
             </div>
           </div>
         </div>
-        <Button
+        {/* <Button
           color={
             showPriceImpactWarning &&
             account.walletStatus === WalletStatus.Loaded
@@ -1059,7 +1121,7 @@ export const TradeClipboard: FunctionComponent<{
               <span>Connect Wallet</span>
             </h6>
           )}
-        </Button>
+        </Button> */}
       </div>
     );
   }
