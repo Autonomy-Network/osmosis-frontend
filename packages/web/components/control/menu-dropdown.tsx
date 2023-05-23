@@ -21,7 +21,7 @@ export const MenuDropdown: FunctionComponent<Props> = ({
 }) => (
   <div
     className={classNames(
-      "absolute flex flex-col bg-osmoverse-900 border border-osmoverse-600 select-none z-[1000]",
+      "absolute flex flex-col bg-osmoverse-900 w-full border border-osmoverse-600 select-none z-[1000]",
       isFloating ? "rounded-xl" : "rounded-b-xl",
       {
         hidden: !isOpen,
