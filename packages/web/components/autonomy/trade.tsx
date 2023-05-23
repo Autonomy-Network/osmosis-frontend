@@ -890,7 +890,7 @@ export const TradeClipboard: FunctionComponent<{
             </div>
           </div>
         </div>
-        {/* <Button
+        <Button
           color={
             showPriceImpactWarning &&
             account.walletStatus === WalletStatus.Loaded
@@ -1115,7 +1115,7 @@ export const TradeClipboard: FunctionComponent<{
               <span>Connect Wallet</span>
             </h6>
           )}
-        </Button> */}
+        </Button>
       </div>
     );
   }
