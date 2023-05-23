@@ -26,7 +26,7 @@ import { InfoTooltip } from "../tooltip";
 import { useTranslation } from "react-multi-lang";
 import { ModSelect } from "../control/mode-select";
 
-const IS_TESTNET = process.env.NEXT_PUBLIC_IS_TESTNET === "false";
+// const IS_TESTNET = process.env.NEXT_PUBLIC_IS_TESTNET === "false";
 
 export const TradeClipboard: FunctionComponent<{
   // IMPORTANT: Pools should be memoized!!
