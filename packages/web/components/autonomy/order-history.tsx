@@ -271,7 +271,7 @@ export default function OrderHistory({
   return (
     <div
       className={classNames(
-        " relative rounded-[18px] my-4 flex flex-col gap-8 bg-osmoverse-800 px-5 md:px-3 pt-12 md:pt-4 pb-7 md:pb-4",
+        "relative rounded-[18px] my-4 flex flex-col gap-8 bg-osmoverse-800 px-5 md:px-3 pt-4 md:pt-4 pb-4 md:pb-4",
         containerClassName
       )}
     >

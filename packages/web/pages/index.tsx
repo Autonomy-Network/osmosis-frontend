@@ -143,44 +143,8 @@ const Home: NextPage = observer(function () {
   });
 
   return (
-    <main className="relative h-full bg-osmoverse-900">
+    <main className="relative h-full bg-osmoverse-900 justify-center items-center">
       <div className="h-full w-full bg-home-bg-pattern bg-cover bg-repeat-x fixed">
-        <svg
-          className="absolute h-full w-full lg:hidden"
-          pointerEvents="none"
-          viewBox="0 0 1300 900"
-          height="900"
-          preserveAspectRatio="xMidYMid slice"
-        >
-          <g>
-            {!IS_FRONTIER && (
-              <ProgressiveSvgImage
-                lowResXlinkHref="/images/osmosis-home-bg-low.png"
-                xlinkHref="/images/osmosis-home-bg.png"
-                x="56"
-                y="220"
-                width="578.7462"
-                height="725.6817"
-              />
-            )}
-            <ProgressiveSvgImage
-              lowResXlinkHref={
-                IS_FRONTIER
-                  ? "/images/osmosis-cowboy-woz-low.png"
-                  : "/images/osmosis-home-fg-low.png"
-              }
-              xlinkHref={
-                IS_FRONTIER
-                  ? "/images/osmosis-cowboy-woz.png"
-                  : "/images/osmosis-home-fg.png"
-              }
-              x={IS_FRONTIER ? "-100" : "61"}
-              y={IS_FRONTIER ? "100" : "682"}
-              width={IS_FRONTIER ? "800" : "448.8865"}
-              height={IS_FRONTIER ? "800" : "285.1699"}
-            />
-          </g>
-        </svg>
       </div>
       <div className="flex flex-col w-full items-center px-2">
         {/* {true && (
@@ -193,7 +157,7 @@ const Home: NextPage = observer(function () {
         )} */}
         {tradeType === "Swap" ? (
           <TradeClipboard
-            containerClassName="max-w-[27rem] w-full md:mt-mobile-header ml-auto mr-[15%] lg:mx-auto"
+            containerClassName="max-w-[27rem] w-full md:mt-mobile-header ml-[15%] mr-[15%] lg:mx-auto"
             pools={pools}
             tradeType={tradeType}
             setTradeType={setTradeType}
@@ -205,14 +169,14 @@ const Home: NextPage = observer(function () {
               type={tradeType}
               tradeType={tradeType}
               setTradeType={setTradeType}
-              containerClassName="max-w-[27rem] w-full md:mt-mobile-header ml-auto mr-[15%] lg:mx-auto"
+              containerClassName="max-w-[27rem] w-full md:mt-mobile-header ml-[15%] mr-[15%] lg:mx-auto"
             />
           </>
         )}
 
         <OrderHistory
           orderType={tradeType}
-          containerClassName="max-w-[27rem] w-full ml-auto mr-[15%] lg:mx-auto"
+          containerClassName="max-w-[27rem] w-full ml-[15%] mr-[15%] lg:mx-auto"
         />
       </div>
     </main>
