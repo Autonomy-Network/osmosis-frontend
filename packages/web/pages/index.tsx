@@ -1,11 +1,10 @@
 import { observer } from "mobx-react-lite";
 import type { NextPage } from "next";
-import { ProgressiveSvgImage } from "../components/progressive-svg-image";
 import { TradeClipboard } from "../components/trade-clipboard";
 import { TradeClipboard as AutonomyTradeClipboard } from "../components/autonomy/trade";
 import OrderHistory from "../components/autonomy/order-history";
 import { useStore } from "../stores";
-import { IS_FRONTIER, EventName } from "../config";
+import { EventName } from "../config";
 import { Dec } from "@keplr-wallet/unit";
 import { useMemo, useRef, useState } from "react";
 import { useAmplitudeAnalytics } from "../hooks";
