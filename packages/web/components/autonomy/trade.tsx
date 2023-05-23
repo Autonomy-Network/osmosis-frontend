@@ -25,7 +25,7 @@ import { InputBox } from "../input";
 import { InfoTooltip } from "../tooltip";
 import { useTranslation } from "react-multi-lang";
 import { ModSelect } from "../control/mode-select";
-import TradeRoute from "../trade-clipboard/trade-route";
+// import TradeRoute from "../trade-clipboard/trade-route";
 
 const IS_TESTNET = process.env.NEXT_PUBLIC_IS_TESTNET === "false";
 
@@ -874,7 +874,7 @@ export const TradeClipboard: FunctionComponent<{
                   </span>
                 </div>
               </div>
-              {!isInModal &&
+              {/* {!isInModal &&
                 orderToeknInConfig.optimizedRoutePaths
                   .slice(0, 1)
                   .map((route, index) => (
@@ -888,7 +888,7 @@ export const TradeClipboard: FunctionComponent<{
                           .isMultihopOsmoFeeDiscount
                       }
                     />
-                  ))}
+                  ))} */}
             </div>
           </div>
         </div>
