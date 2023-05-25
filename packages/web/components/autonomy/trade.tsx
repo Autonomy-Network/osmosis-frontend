@@ -87,22 +87,22 @@ export const TradeClipboard: FunctionComponent<{
 
     const [feeAmount, setFeeAmount] = useState("300000");
 
-    useEffect(() => {
-      const queryFeeAmount = async () => {
-        const client = await CosmWasmClient.connect(
-          "https://rpc-osmosis.keplr.app/"
-        );
+    // useEffect(() => {
+    //   const queryFeeAmount = async () => {
+    //     const client = await CosmWasmClient.connect(
+    //       "https://rpc-osmosis.keplr.app/"
+    //     );
 
-        const config = await client.queryContractSmart(
-          REGISTRY_ADDRESSES[chainId],
-          {
-            config: {},
-          }
-        );
-        setFeeAmount(config.fee_amount);
-      };
-      queryFeeAmount();
-    }, []);
+    //     const config = await client.queryContractSmart(
+    //       REGISTRY_ADDRESSES[chainId],
+    //       {
+    //         config: {},
+    //       }
+    //     );
+    //     setFeeAmount(config.fee_amount);
+    //   };
+    //   queryFeeAmount();
+    // }, []);
 
     // auto focus from amount on token switch
     const fromAmountInput = useRef<HTMLInputElement | null>(null);
@@ -204,16 +204,18 @@ export const TradeClipboard: FunctionComponent<{
             )
           )
         : undefined;
-    const outAmountValue =
-      (!orderToeknInConfig.realOutputAmount.toDec().isZero() &&
-        priceStore.calculatePrice(
-          new CoinPretty(
-            orderToeknInConfig.expectedSwapResult.amount.currency,
-            orderToeknInConfig.realOutputAmount
-          )
-          // orderToeknInConfig.expectedSwapResult.amount
-        )) ||
-      undefined;
+    const outAmountValue = useMemo(
+      () =>
+        (!orderToeknInConfig.realOutputAmount.toDec().isZero() &&
+          priceStore.calculatePrice(
+            new CoinPretty(
+              orderToeknInConfig.expectedSwapResult.amount.currency,
+              orderToeknInConfig.realOutputAmount.mul(new Dec(10e5))
+            )
+          )) ||
+        undefined,
+      [orderToeknInConfig.realOutputAmount]
+    );
 
     return (
       <div
