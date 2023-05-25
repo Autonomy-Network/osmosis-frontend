@@ -20,6 +20,7 @@ export const MenuDropdownIconItem: FunctionComponent<Props> = ({
   onSelect,
   index,
   optionLength,
+  currentOption,
 }: Props) => {
   const t = useTranslation();
 
@@ -30,6 +31,7 @@ export const MenuDropdownIconItem: FunctionComponent<Props> = ({
         {
           "rounded-b-xlinset": index === optionLength - 1,
           "rounded-t-xlinset": index === 0,
+          underline: option.value === currentOption.value,
         }
       )}
       key={option.value.toString()}

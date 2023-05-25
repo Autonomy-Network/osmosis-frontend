@@ -29,7 +29,7 @@ export const ModSelect: FunctionComponent<ModSelectProps> = ({
   return (
     <IconDropdown
       onSelect={onChange}
-      options={options.filter((option) => option.value !== selectedMod)}
+      options={options}
       currentOption={currentOption ?? options[0]}
       title={"Type"}
     />
