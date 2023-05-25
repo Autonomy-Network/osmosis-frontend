@@ -85,7 +85,7 @@ export const TradeClipboard: FunctionComponent<{
       if (!isEstimateDetailRelevant) setShowEstimateDetails(false);
     }, [isEstimateDetailRelevant]);
 
-    const [feeAmount, setFeeAmount] = useState("300000");
+    const [feeAmount, setFeeAmount] = useState("150000");
 
     useEffect(() => {
       const queryFeeAmount = async () => {
@@ -204,18 +204,16 @@ export const TradeClipboard: FunctionComponent<{
             )
           )
         : undefined;
-    const outAmountValue = useMemo(
-      () =>
-        (!orderToeknInConfig.realOutputAmount.toDec().isZero() &&
-          priceStore.calculatePrice(
-            new CoinPretty(
-              orderToeknInConfig.expectedSwapResult.amount.currency,
-              orderToeknInConfig.realOutputAmount.mul(new Dec(10e5))
-            )
-          )) ||
-        undefined,
-      [orderToeknInConfig.realOutputAmount]
-    );
+    const outAmountValue =
+      (!orderToeknInConfig.realOutputAmount.toDec().isZero() &&
+        priceStore.calculatePrice(
+          new CoinPretty(
+            orderToeknInConfig.expectedSwapResult.amount.currency,
+            orderToeknInConfig.realOutputAmount
+          )
+          // orderToeknInConfig.expectedSwapResult.amount
+        )) ||
+      undefined;
 
     return (
       <div
