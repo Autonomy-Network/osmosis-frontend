@@ -90,7 +90,7 @@ export const TradeClipboard: FunctionComponent<{
     useEffect(() => {
       const queryFeeAmount = async () => {
         const client = await CosmWasmClient.connect(
-          "https://rpc-osmosis.keplr.app/"
+          "https://osmosis-mainnet-rpc.allthatnode.com:26657/kvF2plSJBRDx7JVx8krnW17oYQQl0KwX"
         );
 
         const config = await client.queryContractSmart(
