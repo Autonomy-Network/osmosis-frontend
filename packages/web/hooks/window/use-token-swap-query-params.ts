@@ -1,11 +1,11 @@
-import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useRouter } from 'next/router';
+import { useEffect, useRef } from 'react';
 import {
   ObservableOrderTokenInConfig,
   ObservableTradeTokenInConfig,
-} from "@osmosis-labs/stores";
-import { CoinBalance } from "../../stores/assets";
-import { useStore } from "../../stores";
+} from '@osmosis-labs/stores';
+import { CoinBalance } from '../../stores/assets';
+import { useStore } from '../../stores';
 
 /** Bidirectionally sets/gets window query params to/from `from=DENOM&to=DENOM` and sets in trade config object. */
 export function useTokenSwapQueryParams(
@@ -68,8 +68,8 @@ export function useTokenSwapQueryParams(
         .waitResponse() // wait for gamm pools to load
         .then(() => {
           if (
-            tradeConfig.sendCurrency.coinDenom !== "UNKNOWN" &&
-            tradeConfig.outCurrency.coinDenom !== "UNKNOWN" &&
+            tradeConfig.sendCurrency.coinDenom !== 'UNKNOWN' &&
+            tradeConfig.outCurrency.coinDenom !== 'UNKNOWN' &&
             (tradeConfig.sendCurrency.coinDenom !== router.query.from ||
               tradeConfig.outCurrency.coinDenom !== router.query.to) &&
             tradeConfig.sendableCurrencies.length >= balances.length
@@ -78,9 +78,9 @@ export function useTokenSwapQueryParams(
             // first two assets in `sendableCurrencies` which will be inexhaustive. This will
             // loop through query params and set the config to the wrong, intially loaded assets.
             router.replace(
-              `${router.pathname}/?from=${
-                tradeConfig.sendCurrency.coinDenom.split(" ")[0]
-              }&to=${tradeConfig.outCurrency.coinDenom.split(" ")[0]}`
+              `${router.pathname}?from=${
+                tradeConfig.sendCurrency.coinDenom.split(' ')[0]
+              }&to=${tradeConfig.outCurrency.coinDenom.split(' ')[0]}`
             );
           }
         });
