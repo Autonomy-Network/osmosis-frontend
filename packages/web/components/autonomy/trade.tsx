@@ -921,7 +921,6 @@ export const TradeClipboard: FunctionComponent<{
                 i++
               ) {
                 const pool = orderToeknInConfig.optimizedRoutePaths[0].pools[i];
-                console.log("pool", pool);
                 const tokenOutCurrency =
                   chainStore.osmosisObservable.currencies.find(
                     (cur) =>
@@ -986,7 +985,11 @@ export const TradeClipboard: FunctionComponent<{
 
               try {
                 const copyRoute = [...routes];
-                const first = copyRoute.shift();
+                const longRoute = [...routes];
+                let first = copyRoute.shift()
+                if (longRoute.length > 1) {
+                  first = longRoute[longRoute.length - 1]
+                } 
                 const swap = {
                   user: account.bech32Address,
                   route: routes.map((route) => ({
